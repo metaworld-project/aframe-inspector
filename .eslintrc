@@ -3,7 +3,10 @@
   "rules": {
     "react/jsx-indent-props": [2, 2],
     "semi": [2, "always"],
-    "no-console": "off"
+    "no-console": "off",
+    "space-before-function-paren": ["error", "never"],
+    "quotes": ["error", "double"],
+    "no-unused-vars": "warn"
   },
   "env": {
     "es6": true,
@@ -23,9 +26,7 @@
       "classes": true,
       "jsx": true,
       "experimentalObjectRestSpread": true
-     }
+    }
   },
-  "plugins": [
-    "react"
-  ]
+  "plugins": ["react"]
 }

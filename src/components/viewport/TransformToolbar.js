@@ -1,31 +1,31 @@
-var React = require('react');
-var Events = require('../../lib/Events.js');
-var classNames = require('classnames');
+var React = require("react");
+var Events = require("../../lib/Events.js");
+var classNames = require("classnames");
 
 var TransformButtons = [
-  { value: 'translate', icon: 'fa-arrows-alt' },
-  { value: 'rotate', icon: 'fa-repeat' },
-  { value: 'scale', icon: 'fa-expand' }
+  { value: "translate", icon: "fa-arrows-alt" },
+  { value: "rotate", icon: "fa-repeat" },
+  { value: "scale", icon: "fa-expand" }
 ];
 
 export default class TransformToolbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTransform: 'translate',
+      selectedTransform: "translate",
       localSpace: false
     };
   }
 
   componentDidMount() {
-    Events.on('transformmodechange', mode => {
+    Events.on("transformmodechange", mode => {
       this.setState({ selectedTransform: mode });
     });
 
-    Events.on('transformspacechange', () => {
+    Events.on("transformspacechange", () => {
       Events.emit(
-        'transformspacechanged',
-        this.state.localSpace ? 'world' : 'local'
+        "transformspacechanged",
+        this.state.localSpace ? "world" : "local"
       );
       this.setState({ localSpace: !this.state.localSpace });
     });
@@ -33,14 +33,14 @@ export default class TransformToolbar extends React.Component {
 
   changeTransformMode = mode => {
     this.setState({ selectedTransform: mode });
-    Events.emit('transformmodechange', mode);
-    ga('send', 'event', 'Toolbar', 'selectHelper', mode);
+    Events.emit("transformmodechange", mode);
+    ga("send", "event", "Toolbar", "selectHelper", mode);
   };
 
   onLocalChange = e => {
     const local = e.target.checked;
     this.setState({ localSpace: local });
-    Events.emit('transformspacechanged', local ? 'local' : 'world');
+    Events.emit("transformspacechanged", local ? "local" : "world");
   };
 
   renderTransformButtons = () => {
@@ -76,9 +76,9 @@ export default class TransformToolbar extends React.Component {
             type="checkbox"
             title="Toggle between local and world space transforms"
             checked={
-              this.state.localSpace || this.state.selectedTransform === 'scale'
+              this.state.localSpace || this.state.selectedTransform === "scale"
             }
-            disabled={this.state.selectedTransform === 'scale'}
+            disabled={this.state.selectedTransform === "scale"}
             onChange={this.onLocalChange}
           />
           <label

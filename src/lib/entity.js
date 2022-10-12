@@ -1,7 +1,7 @@
-import React from 'react';
-var Events = require('../lib/Events.js');
+import React from "react";
+var Events = require("../lib/Events.js");
 
-import { equal } from '../lib/utils.js';
+import { equal } from "../lib/utils.js";
 
 /**
  * Update a component.
@@ -14,9 +14,9 @@ import { equal } from '../lib/utils.js';
 export function updateEntity(entity, propertyName, value) {
   var splitName;
 
-  if (propertyName.indexOf('.') !== -1) {
+  if (propertyName.indexOf(".") !== -1) {
     // Multi-prop
-    splitName = propertyName.split('.');
+    splitName = propertyName.split(".");
 
     if (value === null || value === undefined) {
       // Remove property.
@@ -37,10 +37,10 @@ export function updateEntity(entity, propertyName, value) {
     }
   }
 
-  Events.emit('entityupdate', {
+  Events.emit("entityupdate", {
     component: splitName ? splitName[0] : propertyName,
     entity: entity,
-    property: splitName ? splitName[1] : '',
+    property: splitName ? splitName[1] : "",
     value: value
   });
 }
@@ -56,9 +56,9 @@ export function removeEntity(entity, force) {
     if (
       force === true ||
       confirm(
-        'Do you really want to remove entity `' +
+        "Do you really want to remove entity `" +
           (entity.id || entity.tagName) +
-          '`?'
+          "`?"
       )
     ) {
       var closest = findClosestEntity(entity);
@@ -129,9 +129,9 @@ export function cloneEntity(entity) {
   entity.flushToDOM();
 
   const clone = entity.cloneNode(true);
-  clone.addEventListener('loaded', function(e) {
+  clone.addEventListener("loaded", function(e) {
     AFRAME.INSPECTOR.selectEntity(clone);
-    Events.emit('entityclone');
+    Events.emit("entityclone");
   });
 
   // Get a valid unique ID for the entity
@@ -175,9 +175,9 @@ function prepareForSerialization(entity) {
     var child = children[i];
     if (
       child.nodeType !== Node.ELEMENT_NODE ||
-      (!child.hasAttribute('aframe-injected') &&
-        !child.hasAttribute('data-aframe-inspector') &&
-        !child.hasAttribute('data-aframe-canvas'))
+      (!child.hasAttribute("aframe-injected") &&
+        !child.hasAttribute("data-aframe-inspector") &&
+        !child.hasAttribute("data-aframe-canvas"))
     ) {
       clone.appendChild(prepareForSerialization(children[i]));
     }
@@ -226,9 +226,9 @@ function optimizeComponents(copy, source) {
  *                         passed component's schema.
  */
 function stringifyComponentValue(schema, data) {
-  data = typeof data === 'undefined' ? {} : data;
+  data = typeof data === "undefined" ? {} : data;
   if (data === null) {
-    return '';
+    return "";
   }
   return (isSingleProperty(schema) ? _single : _multi)();
 
@@ -327,7 +327,7 @@ function getImplicitValue(component, source) {
 function getFromAttribute(component, propertyName, source) {
   var value;
   var mappings = source.mappings || {};
-  var route = component.name + '.' + propertyName;
+  var route = component.name + "." + propertyName;
   var primitiveAttribute = findAttribute(mappings, route);
   if (primitiveAttribute && source.hasAttribute(primitiveAttribute)) {
     value = source.getAttribute(primitiveAttribute);
@@ -477,11 +477,11 @@ function getUniqueId(baseId) {
     i = groups[2];
   }
 
-  while (document.getElementById(baseId + '-' + i)) {
+  while (document.getElementById(baseId + "-" + i)) {
     i++;
   }
 
-  return baseId + '-' + i;
+  return baseId + "-" + i;
 }
 
 export function getComponentClipboardRepresentation(entity, componentName) {
@@ -515,30 +515,30 @@ export function getComponentClipboardRepresentation(entity, componentName) {
   const diff = getModifiedProperties(entity, componentName);
   const attributes = AFRAME.utils.styleParser
     .stringify(diff)
-    .replace(/;|:/g, '$& ');
+    .replace(/;|:/g, "$& ");
   return `${componentName}="${attributes}"`;
 }
 
 function isEmpty(string) {
-  return string === null || string === '';
+  return string === null || string === "";
 }
 
 /**
  * Entity representation.
  */
 const ICONS = {
-  camera: 'fa-camera',
-  mesh: 'fa-cube',
-  light: 'fa-lightbulb-o',
-  text: 'fa-font'
+  camera: "fa-camera",
+  mesh: "fa-cube",
+  light: "fa-lightbulb-o",
+  text: "fa-font"
 };
 export function printEntity(entity, onDoubleClick) {
   if (!entity) {
-    return '';
+    return "";
   }
 
   // Icons.
-  let icons = '';
+  let icons = "";
   for (let objType in ICONS) {
     if (!entity.getObject3D(objType)) {
       continue;
@@ -548,19 +548,19 @@ export function printEntity(entity, onDoubleClick) {
 
   // Name.
   let entityName = entity.id;
-  let type = 'id';
-  if (!entity.isScene && !entityName && entity.getAttribute('class')) {
-    entityName = entity.getAttribute('class').split(' ')[0];
-    type = 'class';
-  } else if (!entity.isScene && !entityName && entity.getAttribute('mixin')) {
-    entityName = entity.getAttribute('mixin').split(' ')[0];
-    type = 'mixin';
+  let type = "id";
+  if (!entity.isScene && !entityName && entity.getAttribute("class")) {
+    entityName = entity.getAttribute("class").split(" ")[0];
+    type = "class";
+  } else if (!entity.isScene && !entityName && entity.getAttribute("mixin")) {
+    entityName = entity.getAttribute("mixin").split(" ")[0];
+    type = "mixin";
   }
 
   return (
     <span className="entityPrint" onDoubleClick={onDoubleClick}>
       <span className="entityTagName">
-        {'<' + entity.tagName.toLowerCase()}
+        {"<" + entity.tagName.toLowerCase()}
       </span>
       {entityName && (
         <span className="entityName" data-entity-name-type={type}>
@@ -570,10 +570,11 @@ export function printEntity(entity, onDoubleClick) {
       {!!icons && (
         <span
           className="entityIcons"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: icons }}
         />
       )}
-      <span className="entityCloseTag">{'>'}</span>
+      <span className="entityCloseTag">{">"}</span>
     </span>
   );
 }
@@ -586,6 +587,7 @@ export function printEntity(entity, onDoubleClick) {
  */
 export function createEntity(definition, cb) {
   const entity = document.createElement(definition.element);
+  entity.setAttribute("id", getUniqueId(definition.element));
 
   // load default attributes
   for (let attr in definition.components) {
@@ -593,8 +595,8 @@ export function createEntity(definition, cb) {
   }
 
   // Ensure the components are loaded before update the UI
-  entity.addEventListener('loaded', () => {
-    Events.emit('entitycreated', entity);
+  entity.addEventListener("loaded", () => {
+    Events.emit("entitycreated", entity);
     cb(entity);
   });
 

@@ -1,5 +1,5 @@
-var React = require('react');
-import PropTypes from 'prop-types';
+var React = require("react");
+import PropTypes from "prop-types";
 
 export default class InputWidget extends React.Component {
   static propTypes = {
@@ -12,7 +12,7 @@ export default class InputWidget extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { value: this.props.value || '' };
+    this.state = { value: this.props.value || "" };
   }
 
   onChange = e => {
@@ -34,7 +34,7 @@ export default class InputWidget extends React.Component {
       <input
         type="text"
         className="string"
-        value={this.state.value || ''}
+        value={this.state.value || ""}
         onChange={this.onChange}
       />
     );

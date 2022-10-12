@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ComponentsContainer from './ComponentsContainer';
-import Events from '../../lib/Events';
+import React from "react";
+import PropTypes from "prop-types";
+import ComponentsContainer from "./ComponentsContainer";
+import Events from "../../lib/Events";
 
 export default class Sidebar extends React.Component {
   static propTypes = {
@@ -15,18 +15,18 @@ export default class Sidebar extends React.Component {
   }
 
   componentDidMount() {
-    Events.on('componentremove', event => {
+    Events.on("componentremove", event => {
       this.forceUpdate();
     });
 
-    Events.on('componentadd', event => {
+    Events.on("componentadd", event => {
       this.forceUpdate();
     });
   }
 
   handleToggle = () => {
     this.setState({ open: !this.state.open });
-    ga('send', 'event', 'Components', 'toggleSidebar');
+    ga("send", "event", "Components", "toggleSidebar");
   };
 
   render() {

@@ -1,14 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Events from '../../lib/Events';
-import Select from 'react-select';
+import React from "react";
+import PropTypes from "prop-types";
+import Events from "../../lib/Events";
+import Select from "react-select";
+import whiteListOptions from "../../configs/whiteListOptions";
 
-var DELIMITER = ' ';
+var DELIMITER = " ";
 
 export default class AddComponent extends React.Component {
   static propTypes = {
     entity: PropTypes.object
   };
+
+  randomId() {
+    return Math.random()
+      .toString(36)
+      .substring(2, 9);
+  }
 
   /**
    * Add blank component.
@@ -24,35 +31,41 @@ export default class AddComponent extends React.Component {
     })[0];
 
     if (AFRAME.components[componentName].multiple) {
-      const id = prompt(
-        `Provide an ID for this component (e.g., 'foo' for ${componentName}__foo).`
-      );
-      componentName = id ? `${componentName}__${id}` : componentName;
+      // const id = prompt(
+      //   `Provide an ID for this component (e.g., 'foo' for ${componentName}__foo).`
+      // );
+      // componentName = id ? `${componentName}__${id}` : componentName;
+      componentName = `${componentName}__${this.randomId()}`;
     }
 
-    entity.setAttribute(componentName, '');
-    Events.emit('componentadd', { entity: entity, component: componentName });
-    ga('send', 'event', 'Components', 'addComponent', componentName);
+    entity.setAttribute(componentName, "");
+    Events.emit("componentadd", { entity: entity, component: componentName });
+    ga("send", "event", "Components", "addComponent", componentName);
   };
 
   /**
    * Component dropdown options.
    */
   getComponentsOptions() {
-    const usedComponents = Object.keys(this.props.entity.components);
-    var commonOptions = Object.keys(AFRAME.components)
-      .filter(function(componentName) {
-        return (
-          AFRAME.components[componentName].multiple ||
-          usedComponents.indexOf(componentName) === -1
-        );
-      })
-      .sort()
-      .map(function(value) {
-        return { value: value, label: value, origin: 'loaded' };
-      });
+    // const usedComponents = Object.keys(this.props.entity.components);
+    // var commonOptions = Object.keys(AFRAME.components)
+    //   .filter(function(componentName) {
+    //     return (
+    //       AFRAME.components[componentName].multiple ||
+    //       usedComponents.indexOf(componentName) === -1
+    //     );
+    //   })
+    //   .sort()
+    //   .map(function(value) {
+    //     return { value: value, label: value, origin: "loaded" };
+    //   });
 
-    this.options = commonOptions;
+    this.options = whiteListOptions.map(value => ({
+      value,
+      label: value,
+      origin: "loaded"
+    }));
+    console.log(this.options);
     this.options = this.options.sort(function(a, b) {
       return a.label === b.label ? 0 : a.label < b.label ? -1 : 1;
     });
@@ -64,7 +77,7 @@ export default class AddComponent extends React.Component {
     );
     return (
       <strong className="option">
-        {option.label} {option.origin === 'loaded' ? bullet : ''}
+        {option.label} {option.origin === "loaded" ? bullet : ""}
       </strong>
     );
   }
@@ -105,7 +118,7 @@ export default class AddComponent extends React.Component {
  */
 function isComponentInstanced(entity, componentName) {
   for (var component in entity.components) {
-    if (component.substr(0, component.indexOf('__')) === componentName) {
+    if (component.substr(0, component.indexOf("__")) === componentName) {
       return true;
     }
   }

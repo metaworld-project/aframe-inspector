@@ -1,25 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { InputWidget } from '../widgets';
-import DEFAULT_COMPONENTS from './DefaultComponents';
-import PropertyRow from './PropertyRow';
-import Collapsible from '../Collapsible';
-import Mixins from './Mixins';
+import React from "react";
+import PropTypes from "prop-types";
+import { InputWidget } from "../widgets";
+import DEFAULT_COMPONENTS from "./DefaultComponents";
+import PropertyRow from "./PropertyRow";
+import Collapsible from "../Collapsible";
+import Mixins from "./Mixins";
 import {
   updateEntity,
   getEntityClipboardRepresentation,
   printEntity
-} from '../../lib/entity';
-import Events from '../../lib/Events';
-import Clipboard from 'clipboard';
-import { saveBlob } from '../../lib/utils';
+} from "../../lib/entity";
+import Events from "../../lib/Events";
+import Clipboard from "clipboard";
+import { saveBlob } from "../../lib/utils";
 
 // @todo Take this out and use updateEntity?
 function changeId(componentName, value) {
   var entity = AFRAME.INSPECTOR.selectedEntity;
   if (entity.id !== value) {
     entity.id = value;
-    Events.emit('entityidchange', entity);
+    Events.emit("entityidchange", entity);
   }
 }
 
@@ -29,7 +29,7 @@ export default class CommonComponents extends React.Component {
   };
 
   componentDidMount() {
-    Events.on('entityupdate', detail => {
+    Events.on("entityupdate", detail => {
       if (detail.entity !== this.props.entity) {
         return;
       }
@@ -38,7 +38,7 @@ export default class CommonComponents extends React.Component {
       }
     });
 
-    Events.on('refreshsidebarobject3d', () => {
+    Events.on("refreshsidebarobject3d", () => {
       this.forceUpdate();
     });
 
@@ -47,7 +47,7 @@ export default class CommonComponents extends React.Component {
         return getEntityClipboardRepresentation(this.props.entity);
       }
     });
-    clipboard.on('error', e => {
+    clipboard.on("error", e => {
       // @todo Show the error on the UI
     });
   }
@@ -55,10 +55,10 @@ export default class CommonComponents extends React.Component {
   renderCommonAttributes() {
     const entity = this.props.entity;
     const components = entity ? entity.components : {};
-    return ['position', 'rotation', 'scale', 'visible'].map(componentName => {
+    return ["position", "rotation", "scale", "visible"].map(componentName => {
       const schema = AFRAME.components[componentName].schema;
       var data = entity.object3D[componentName];
-      if (componentName === 'rotation') {
+      if (componentName === "rotation") {
         data = {
           x: THREE.MathUtils.radToDeg(entity.object3D.rotation.x),
           y: THREE.MathUtils.radToDeg(entity.object3D.rotation.y),
@@ -86,8 +86,8 @@ export default class CommonComponents extends React.Component {
     AFRAME.INSPECTOR.exporters.gltf.parse(
       entity.object3D,
       function(buffer) {
-        const blob = new Blob([buffer], { type: 'application/octet-stream' });
-        saveBlob(blob, (entity.id || 'entity') + '.glb');
+        const blob = new Blob([buffer], { type: "application/octet-stream" });
+        saveBlob(blob, (entity.id || "entity") + ".glb");
       },
       { binary: true }
     );
@@ -106,8 +106,15 @@ export default class CommonComponents extends React.Component {
           onClick={event => {
             this.exportToGLTF();
             event.stopPropagation();
-          }} >
-          <img src={process.env.NODE_ENV === 'production' ? 'https://aframe.io/aframe-inspector/assets/gltf.svg' : '../assets/gltf.svg'} />
+          }}
+        >
+          <img
+            src={
+              process.env.NODE_ENV === "production"
+                ? "https://aframe.io/aframe-inspector/assets/gltf.svg"
+                : "../assets/gltf.svg"
+            }
+          />
         </a>
         <a
           href="#"
@@ -139,7 +146,7 @@ export default class CommonComponents extends React.Component {
           </div>
           <div className="propertyRow">
             <label className="text">class</label>
-            <span>{entity.getAttribute('class')}</span>
+            <span>{entity.getAttribute("class")}</span>
           </div>
           {this.renderCommonAttributes()}
           <Mixins entity={entity} />

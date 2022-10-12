@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Select from 'react-select';
+import React from "react";
+import PropTypes from "prop-types";
+import Select from "react-select";
 
-const Events = require('../../lib/Events.js');
+const Events = require("../../lib/Events.js");
 
 function trim(s) {
-  s = s.replace(/(^\s*)|(\s*$)/gi, '');
-  s = s.replace(/[ ]{2,}/gi, ' ');
-  s = s.replace(/\n /, '\n');
+  s = s.replace(/(^\s*)|(\s*$)/gi, "");
+  s = s.replace(/[ ]{2,}/gi, " ");
+  s = s.replace(/\n /, "\n");
   return s;
 }
 
@@ -25,11 +25,12 @@ export default class Mixin extends React.Component {
     if (this.props.entity === prevProps.entity) {
       return;
     }
+    // eslint-disable-next-line react/no-did-update-set-state
     this.setState({ mixins: this.getMixinValue() });
   }
 
   getMixinValue() {
-    return (this.props.entity.getAttribute('mixin') || '')
+    return (this.props.entity.getAttribute("mixin") || "")
       .split(/\s+/g)
       .filter(v => !!v)
       .map(v => ({ label: v, value: v }));
@@ -41,7 +42,7 @@ export default class Mixin extends React.Component {
     });
 
     return Array.prototype.slice
-      .call(document.querySelectorAll('a-mixin'))
+      .call(document.querySelectorAll("a-mixin"))
       .filter(function(mixin) {
         return mixinIds.indexOf(mixin.id) === -1;
       })
@@ -55,17 +56,17 @@ export default class Mixin extends React.Component {
     const entity = this.props.entity;
 
     this.setState({ mixins: value });
-    const mixinStr = value.map(v => v.value).join(' ');
+    const mixinStr = value.map(v => v.value).join(" ");
     console.log(mixinStr);
-    entity.setAttribute('mixin', mixinStr);
+    entity.setAttribute("mixin", mixinStr);
 
-    Events.emit('entityupdate', {
-      component: 'mixin',
+    Events.emit("entityupdate", {
+      component: "mixin",
       entity: entity,
-      property: '',
+      property: "",
       value: mixinStr
     });
-    ga('send', 'event', 'Components', 'addMixin');
+    ga("send", "event", "Components", "addMixin");
   };
 
   render() {

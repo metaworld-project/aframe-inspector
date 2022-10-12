@@ -1,6 +1,6 @@
-var React = require('react');
-var Events = require('../../lib/Events.js');
-import { printEntity } from '../../lib/entity';
+var React = require("react");
+var Events = require("../../lib/Events.js");
+import { printEntity } from "../../lib/entity";
 
 export default class ViewportHUD extends React.Component {
   constructor(props) {
@@ -12,11 +12,11 @@ export default class ViewportHUD extends React.Component {
   }
 
   componentDidMount() {
-    Events.on('raycastermouseenter', el => {
+    Events.on("raycastermouseenter", el => {
       this.setState({ hoveredEntity: el });
     });
 
-    Events.on('raycastermouseleave', el => {
+    Events.on("raycastermouseleave", el => {
       this.setState({ hoveredEntity: el });
     });
   }
