@@ -1,19 +1,19 @@
 /* globals AFRAME */
-var Events = require('./Events');
+var Events = require("./Events");
 import {
   removeSelectedEntity,
   cloneSelectedEntity,
   cloneEntity
-} from '../lib/entity';
-import { os } from '../lib/utils.js';
+} from "../lib/entity";
+import { os } from "../lib/utils.js";
 
 function shouldCaptureKeyEvent(event) {
   if (event.metaKey) {
     return false;
   }
   return (
-    event.target.closest('#cameraToolbar') ||
-    (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA')
+    event.target.closest("#cameraToolbar") ||
+    (event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA")
   );
 }
 
@@ -32,7 +32,7 @@ var Shortcuts = {
 
     // h: help
     if (keyCode === 72) {
-      Events.emit('openhelpmodal');
+      Events.emit("openhelpmodal");
     }
 
     // esc: close inspector
@@ -44,37 +44,37 @@ var Shortcuts = {
 
     // w: translate
     if (keyCode === 87) {
-      Events.emit('transformmodechange', 'translate');
+      Events.emit("transformmodechange", "translate");
     }
 
     // e: rotate
     if (keyCode === 69) {
-      Events.emit('transformmodechange', 'rotate');
+      Events.emit("transformmodechange", "rotate");
     }
 
     // r: scale
     if (keyCode === 82) {
-      Events.emit('transformmodechange', 'scale');
+      Events.emit("transformmodechange", "scale");
     }
 
     // o: transform space
     if (keyCode === 79) {
-      Events.emit('transformspacechange');
+      Events.emit("transformspacechange");
     }
 
     // g: toggle grid
     if (keyCode === 71) {
-      Events.emit('togglegrid');
+      Events.emit("togglegrid");
     }
 
     // m: motion capture
     if (keyCode === 77) {
-      Events.emit('togglemotioncapture');
+      Events.emit("togglemotioncapture");
     }
 
     // n: new entity
     if (keyCode === 78) {
-      Events.emit('entitycreate', { element: 'a-entity', components: {} });
+      Events.emit("entitycreate", { element: "a-entity", components: {} });
     }
 
     // backspace & supr: remove selected entity
@@ -91,24 +91,24 @@ var Shortcuts = {
     if (keyCode === 70) {
       const selectedEntity = AFRAME.INSPECTOR.selectedEntity;
       if (selectedEntity !== undefined && selectedEntity !== null) {
-        Events.emit('objectfocus', selectedEntity.object3D);
+        Events.emit("objectfocus", selectedEntity.object3D);
       }
     }
 
     if (keyCode === 49) {
-      Events.emit('cameraperspectivetoggle');
+      Events.emit("cameraperspectivetoggle");
     } else if (keyCode === 50) {
-      Events.emit('cameraorthographictoggle', 'left');
+      Events.emit("cameraorthographictoggle", "left");
     } else if (keyCode === 51) {
-      Events.emit('cameraorthographictoggle', 'right');
+      Events.emit("cameraorthographictoggle", "right");
     } else if (keyCode === 52) {
-      Events.emit('cameraorthographictoggle', 'top');
+      Events.emit("cameraorthographictoggle", "top");
     } else if (keyCode === 53) {
-      Events.emit('cameraorthographictoggle', 'bottom');
+      Events.emit("cameraorthographictoggle", "bottom");
     } else if (keyCode === 54) {
-      Events.emit('cameraorthographictoggle', 'back');
+      Events.emit("cameraorthographictoggle", "back");
     } else if (keyCode === 55) {
-      Events.emit('cameraorthographictoggle', 'front');
+      Events.emit("cameraorthographictoggle", "front");
     }
 
     for (var moduleName in this.shortcuts.modules) {
@@ -129,12 +129,12 @@ var Shortcuts = {
     }
 
     if (
-      (event.ctrlKey && os === 'windows') ||
-      (event.metaKey && os === 'macos')
+      (event.ctrlKey && os === "windows") ||
+      (event.metaKey && os === "macos")
     ) {
       if (
         AFRAME.INSPECTOR.selectedEntity &&
-        document.activeElement.tagName !== 'INPUT'
+        document.activeElement.tagName !== "INPUT"
       ) {
         // x: cut selected entity
         if (event.keyCode === 88) {
@@ -157,13 +157,13 @@ var Shortcuts = {
       if (event.keyCode === 83) {
         event.preventDefault();
         event.stopPropagation();
-        document.getElementById('filter').focus();
+        document.getElementById("filter").focus();
       }
     }
 
     // º: toggle sidebars visibility
     if (event.keyCode === 48) {
-      Events.emit('togglesidebar', { which: 'all' });
+      Events.emit("togglesidebar", { which: "all" });
       event.preventDefault();
       event.stopPropagation();
     }
@@ -173,13 +173,13 @@ var Shortcuts = {
       this.disable();
     }
 
-    window.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    window.addEventListener('keyup', this.onKeyUp.bind(this), false);
+    window.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    window.addEventListener("keyup", this.onKeyUp.bind(this), false);
     this.enabled = true;
   },
   disable: function() {
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('keyup', this.onKeyUp);
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("keyup", this.onKeyUp);
     this.enabled = false;
   },
   checkModuleShortcutCollision: function(keyCode, moduleName, mustBeActive) {
@@ -188,7 +188,7 @@ var Shortcuts = {
       this.shortcuts.modules[moduleName][keyCode]
     ) {
       console.warn(
-        'Keycode <%s> already registered as shorcut within the same module',
+        "Keycode <%s> already registered as shorcut within the same module",
         keyCode
       );
     }

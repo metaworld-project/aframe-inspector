@@ -1,25 +1,25 @@
 /* global VERSION BUILD_TIMESTAMP COMMIT_HASH webFont */
-require('../vendor/ga');
+require("../vendor/ga");
 
-var Events = require('./lib/Events');
-var Viewport = require('./lib/viewport');
-var AssetsLoader = require('./lib/assetsLoader');
-var Shortcuts = require('./lib/shortcuts');
+var Events = require("./lib/Events");
+var Viewport = require("./lib/viewport");
+var AssetsLoader = require("./lib/assetsLoader");
+var Shortcuts = require("./lib/shortcuts");
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Main from './components/Main';
-import { initCameras } from './lib/cameras';
-import { injectCSS, injectJS } from './lib/utils';
-import { createEntity } from './lib/entity';
-import { GLTFExporter } from '../vendor/GLTFExporter'; // eslint-disable-line no-unused-vars
+import React from "react";
+import ReactDOM from "react-dom";
+import Main from "./components/Main";
+import { initCameras } from "./lib/cameras";
+import { injectCSS, injectJS } from "./lib/utils";
+import { createEntity } from "./lib/entity";
+import { GLTFExporter } from "../vendor/GLTFExporter"; // eslint-disable-line no-unused-vars
 
-require('./style/index.styl');
+require("./style/index.styl");
 
 function Inspector() {
   this.assetsLoader = new AssetsLoader();
   this.exporters = { gltf: new THREE.GLTFExporter() };
-  this.history = require('./lib/history');
+  this.history = require("./lib/history");
   this.isFirstOpen = true;
   this.modules = {};
   this.on = Events.on;
@@ -39,7 +39,7 @@ function Inspector() {
       this.init();
       return;
     }
-    this.sceneEl.addEventListener('loaded', this.init.bind(this), {
+    this.sceneEl.addEventListener("loaded", this.init.bind(this), {
       once: true
     });
   };
@@ -51,7 +51,7 @@ Inspector.prototype = {
     // Wait for camera.
     if (!this.sceneEl.camera) {
       this.sceneEl.addEventListener(
-        'camera-set-active',
+        "camera-set-active",
         () => {
           this.init();
         },
@@ -60,7 +60,7 @@ Inspector.prototype = {
       return;
     }
 
-    this.container = document.querySelector('.a-canvas');
+    this.container = document.querySelector(".a-canvas");
     initCameras(this);
     this.initUI();
   },
@@ -72,21 +72,21 @@ Inspector.prototype = {
     this.selected = null;
 
     // Init React.
-    const div = document.createElement('div');
-    div.id = 'aframeInspector';
-    div.setAttribute('data-aframe-inspector', 'app');
+    const div = document.createElement("div");
+    div.id = "aframeInspector";
+    div.setAttribute("data-aframe-inspector", "app");
     document.body.appendChild(div);
     ReactDOM.render(<Main />, div);
 
     this.scene = this.sceneEl.object3D;
     this.helpers = {};
     this.sceneHelpers = new THREE.Scene();
-    this.sceneHelpers.userData.source = 'INSPECTOR';
+    this.sceneHelpers.userData.source = "INSPECTOR";
     this.sceneHelpers.visible = true;
     this.inspectorActive = false;
 
     this.viewport = new Viewport(this);
-    Events.emit('windowresize');
+    Events.emit("windowresize");
 
     this.sceneEl.object3D.traverse(node => {
       this.addHelper(node);
@@ -99,7 +99,7 @@ Inspector.prototype = {
   removeObject: function(object) {
     // Remove just the helper as the object will be deleted by A-Frame
     this.removeHelpers(object);
-    Events.emit('objectremove', object);
+    Events.emit("objectremove", object);
   },
 
   addHelper: (function() {
@@ -142,7 +142,7 @@ Inspector.prototype = {
       if (helper) {
         this.sceneHelpers.remove(helper);
         delete this.helpers[node.uuid];
-        Events.emit('helperremove', this.helpers[node.uuid]);
+        Events.emit("helperremove", this.helpers[node.uuid]);
       }
     });
   },
@@ -156,7 +156,7 @@ Inspector.prototype = {
     }
 
     if (entity && emit === undefined) {
-      Events.emit('entityselect', entity);
+      Events.emit("entityselect", entity);
     }
 
     // Update helper visibilities.
@@ -175,7 +175,7 @@ Inspector.prototype = {
   },
 
   initEvents: function() {
-    window.addEventListener('keydown', evt => {
+    window.addEventListener("keydown", evt => {
       // Alt + Ctrl + i: Shorcut to toggle the inspector
       var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
       if (shortcutPressed) {
@@ -183,22 +183,22 @@ Inspector.prototype = {
       }
     });
 
-    Events.on('entityselect', entity => {
+    Events.on("entityselect", entity => {
       this.selectEntity(entity, false);
     });
 
-    Events.on('inspectortoggle', active => {
+    Events.on("inspectortoggle", active => {
       this.inspectorActive = active;
       this.sceneHelpers.visible = this.inspectorActive;
     });
 
-    Events.on('entitycreate', definition => {
+    Events.on("entitycreate", definition => {
       createEntity(definition, entity => {
         this.selectEntity(entity);
       });
     });
 
-    document.addEventListener('child-detached', event => {
+    document.addEventListener("child-detached", event => {
       var entity = event.detail.el;
       AFRAME.INSPECTOR.removeObject(entity.object3D);
     });
@@ -220,7 +220,7 @@ Inspector.prototype = {
       return;
     }
     this.selected = object3D;
-    Events.emit('objectselect', object3D);
+    Events.emit("objectselect", object3D);
   },
 
   deselect: function() {
@@ -243,15 +243,15 @@ Inspector.prototype = {
    */
   open: function(focusEl) {
     this.opened = true;
-    Events.emit('inspectortoggle', true);
+    Events.emit("inspectortoggle", true);
 
-    if (this.sceneEl.hasAttribute('embedded')) {
+    if (this.sceneEl.hasAttribute("embedded")) {
       // Remove embedded styles, but keep track of it.
-      this.sceneEl.removeAttribute('embedded');
-      this.sceneEl.setAttribute('aframe-inspector-removed-embedded');
+      this.sceneEl.removeAttribute("embedded");
+      this.sceneEl.setAttribute("aframe-inspector-removed-embedded");
     }
 
-    document.body.classList.add('aframe-inspector-opened');
+    document.body.classList.add("aframe-inspector-opened");
     this.sceneEl.resize();
     this.sceneEl.pause();
     this.sceneEl.exitVR();
@@ -265,16 +265,16 @@ Inspector.prototype = {
     if (
       !focusEl &&
       this.isFirstOpen &&
-      AFRAME.utils.getUrlParameter('inspector')
+      AFRAME.utils.getUrlParameter("inspector")
     ) {
       // Focus entity with URL parameter on first open.
       focusEl = document.getElementById(
-        AFRAME.utils.getUrlParameter('inspector')
+        AFRAME.utils.getUrlParameter("inspector")
       );
     }
     if (focusEl) {
       this.selectEntity(focusEl);
-      Events.emit('objectfocus', focusEl.object3D);
+      Events.emit("objectfocus", focusEl.object3D);
     }
     this.isFirstOpen = false;
   },
@@ -285,7 +285,7 @@ Inspector.prototype = {
    */
   close: function() {
     this.opened = false;
-    Events.emit('inspectortoggle', false);
+    Events.emit("inspectortoggle", false);
 
     // Untrick scene when we enabled this to run the cursor tick.
     this.sceneEl.isPlaying = false;
@@ -293,14 +293,15 @@ Inspector.prototype = {
     this.sceneEl.play();
     this.cursor.pause();
 
-    if (this.sceneEl.hasAttribute('aframe-inspector-removed-embedded')) {
-      this.sceneEl.setAttribute('embedded', '');
-      this.sceneEl.removeAttribute('aframe-inspector-removed-embedded');
+    if (this.sceneEl.hasAttribute("aframe-inspector-removed-embedded")) {
+      this.sceneEl.setAttribute("embedded", "");
+      this.sceneEl.removeAttribute("aframe-inspector-removed-embedded");
     }
-    document.body.classList.remove('aframe-inspector-opened');
+    document.body.classList.remove("aframe-inspector-opened");
     this.sceneEl.resize();
     Shortcuts.disable();
   }
 };
 
 const inspector = (AFRAME.INSPECTOR = new Inspector());
+console.log(inspector);

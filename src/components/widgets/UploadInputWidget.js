@@ -57,7 +57,7 @@ export default class UploadInputWidget extends React.Component {
           type="file"
           className="hidden"
           // accept only glb files
-          accept=".glb"
+          // accept=".glb"
           onChange={this.onFileChange}
           ref={ref => (this.inputRef = ref)}
         />

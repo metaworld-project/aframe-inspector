@@ -136,6 +136,40 @@ module.exports = __webpack_require__(18);
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (false) {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = require('./factoryWithTypeCheckers')(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(199)();
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -173,40 +207,6 @@ function reactProdInvariant(code) {
 }
 
 module.exports = reactProdInvariant;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (false) {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = require('./factoryWithTypeCheckers')(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(199)();
-}
-
 
 /***/ }),
 /* 4 */
@@ -418,7 +418,7 @@ module.exports = new Events();
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var DOMProperty = __webpack_require__(20);
 var ReactDOMComponentFlags = __webpack_require__(63);
@@ -724,7 +724,7 @@ module.exports = emptyFunction;
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(67);
@@ -1285,7 +1285,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -1484,9 +1484,9 @@ var Events = __webpack_require__(6);
 function updateEntity(entity, propertyName, value) {
   var splitName;
 
-  if (propertyName.indexOf('.') !== -1) {
+  if (propertyName.indexOf(".") !== -1) {
     // Multi-prop
-    splitName = propertyName.split('.');
+    splitName = propertyName.split(".");
 
     if (value === null || value === undefined) {
       // Remove property.
@@ -1507,10 +1507,10 @@ function updateEntity(entity, propertyName, value) {
     }
   }
 
-  Events.emit('entityupdate', {
+  Events.emit("entityupdate", {
     component: splitName ? splitName[0] : propertyName,
     entity: entity,
-    property: splitName ? splitName[1] : '',
+    property: splitName ? splitName[1] : "",
     value: value
   });
 }
@@ -1523,7 +1523,7 @@ function updateEntity(entity, propertyName, value) {
  */
 function removeEntity(entity, force) {
   if (entity) {
-    if (force === true || confirm('Do you really want to remove entity `' + (entity.id || entity.tagName) + '`?')) {
+    if (force === true || confirm("Do you really want to remove entity `" + (entity.id || entity.tagName) + "`?")) {
       var closest = findClosestEntity(entity);
       AFRAME.INSPECTOR.removeObject(entity.object3D);
       entity.parentNode.removeChild(entity);
@@ -1592,9 +1592,9 @@ function cloneEntity(entity) {
   entity.flushToDOM();
 
   var clone = entity.cloneNode(true);
-  clone.addEventListener('loaded', function (e) {
+  clone.addEventListener("loaded", function (e) {
     AFRAME.INSPECTOR.selectEntity(clone);
-    Events.emit('entityclone');
+    Events.emit("entityclone");
   });
 
   // Get a valid unique ID for the entity
@@ -1636,7 +1636,7 @@ function prepareForSerialization(entity) {
   var children = entity.childNodes;
   for (var i = 0, l = children.length; i < l; i++) {
     var child = children[i];
-    if (child.nodeType !== Node.ELEMENT_NODE || !child.hasAttribute('aframe-injected') && !child.hasAttribute('data-aframe-inspector') && !child.hasAttribute('data-aframe-canvas')) {
+    if (child.nodeType !== Node.ELEMENT_NODE || !child.hasAttribute("aframe-injected") && !child.hasAttribute("data-aframe-inspector") && !child.hasAttribute("data-aframe-canvas")) {
       clone.appendChild(prepareForSerialization(children[i]));
     }
   }
@@ -1680,9 +1680,9 @@ function optimizeComponents(copy, source) {
  *                         passed component's schema.
  */
 function stringifyComponentValue(schema, data) {
-  data = typeof data === 'undefined' ? {} : data;
+  data = typeof data === "undefined" ? {} : data;
   if (data === null) {
-    return '';
+    return "";
   }
   return (isSingleProperty(schema) ? _single : _multi)();
 
@@ -1781,7 +1781,7 @@ function getImplicitValue(component, source) {
 function getFromAttribute(component, propertyName, source) {
   var value;
   var mappings = source.mappings || {};
-  var route = component.name + '.' + propertyName;
+  var route = component.name + "." + propertyName;
   var primitiveAttribute = findAttribute(mappings, route);
   if (primitiveAttribute && source.hasAttribute(primitiveAttribute)) {
     value = source.getAttribute(primitiveAttribute);
@@ -1931,11 +1931,11 @@ function getUniqueId(baseId) {
     i = groups[2];
   }
 
-  while (document.getElementById(baseId + '-' + i)) {
+  while (document.getElementById(baseId + "-" + i)) {
     i++;
   }
 
-  return baseId + '-' + i;
+  return baseId + "-" + i;
 }
 
 function getComponentClipboardRepresentation(entity, componentName) {
@@ -1967,70 +1967,71 @@ function getComponentClipboardRepresentation(entity, componentName) {
   }
 
   var diff = getModifiedProperties(entity, componentName);
-  var attributes = AFRAME.utils.styleParser.stringify(diff).replace(/;|:/g, '$& ');
-  return componentName + '="' + attributes + '"';
+  var attributes = AFRAME.utils.styleParser.stringify(diff).replace(/;|:/g, "$& ");
+  return componentName + "=\"" + attributes + "\"";
 }
 
 function isEmpty(string) {
-  return string === null || string === '';
+  return string === null || string === "";
 }
 
 /**
  * Entity representation.
  */
 var ICONS = {
-  camera: 'fa-camera',
-  mesh: 'fa-cube',
-  light: 'fa-lightbulb-o',
-  text: 'fa-font'
+  camera: "fa-camera",
+  mesh: "fa-cube",
+  light: "fa-lightbulb-o",
+  text: "fa-font"
 };
 function printEntity(entity, onDoubleClick) {
   if (!entity) {
-    return '';
+    return "";
   }
 
   // Icons.
-  var icons = '';
+  var icons = "";
   for (var objType in ICONS) {
     if (!entity.getObject3D(objType)) {
       continue;
     }
-    icons += '&nbsp;<i class="fa ' + ICONS[objType] + '" title="' + objType + '"></i>';
+    icons += "&nbsp;<i class=\"fa " + ICONS[objType] + "\" title=\"" + objType + "\"></i>";
   }
 
   // Name.
   var entityName = entity.id;
-  var type = 'id';
-  if (!entity.isScene && !entityName && entity.getAttribute('class')) {
-    entityName = entity.getAttribute('class').split(' ')[0];
-    type = 'class';
-  } else if (!entity.isScene && !entityName && entity.getAttribute('mixin')) {
-    entityName = entity.getAttribute('mixin').split(' ')[0];
-    type = 'mixin';
+  var type = "id";
+  if (!entity.isScene && !entityName && entity.getAttribute("class")) {
+    entityName = entity.getAttribute("class").split(" ")[0];
+    type = "class";
+  } else if (!entity.isScene && !entityName && entity.getAttribute("mixin")) {
+    entityName = entity.getAttribute("mixin").split(" ")[0];
+    type = "mixin";
   }
 
   return _react2.default.createElement(
-    'span',
-    { className: 'entityPrint', onDoubleClick: onDoubleClick },
+    "span",
+    { className: "entityPrint", onDoubleClick: onDoubleClick },
     _react2.default.createElement(
-      'span',
-      { className: 'entityTagName' },
-      '<' + entity.tagName.toLowerCase()
+      "span",
+      { className: "entityTagName" },
+      "<" + entity.tagName.toLowerCase()
     ),
     entityName && _react2.default.createElement(
-      'span',
-      { className: 'entityName', 'data-entity-name-type': type },
-      '\xA0',
+      "span",
+      { className: "entityName", "data-entity-name-type": type },
+      "\xA0",
       entityName
     ),
-    !!icons && _react2.default.createElement('span', {
-      className: 'entityIcons',
-      dangerouslySetInnerHTML: { __html: icons }
+    !!icons && _react2.default.createElement("span", {
+      className: "entityIcons"
+      // eslint-disable-next-line react/no-danger
+      , dangerouslySetInnerHTML: { __html: icons }
     }),
     _react2.default.createElement(
-      'span',
-      { className: 'entityCloseTag' },
-      '>'
+      "span",
+      { className: "entityCloseTag" },
+      ">"
     )
   );
 }
@@ -2043,6 +2044,7 @@ function printEntity(entity, onDoubleClick) {
  */
 function createEntity(definition, cb) {
   var entity = document.createElement(definition.element);
+  entity.setAttribute("id", getUniqueId(definition.element));
 
   // load default attributes
   for (var attr in definition.components) {
@@ -2050,8 +2052,8 @@ function createEntity(definition, cb) {
   }
 
   // Ensure the components are loaded before update the UI
-  entity.addEventListener('loaded', function () {
-    Events.emit('entitycreated', entity);
+  entity.addEventListener("loaded", function () {
+    Events.emit("entitycreated", entity);
     cb(entity);
   });
 
@@ -2680,7 +2682,7 @@ module.exports = ReactElement;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -3361,7 +3363,7 @@ module.exports = EventPropagators;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var EventPluginRegistry = __webpack_require__(38);
 var EventPluginUtils = __webpack_require__(39);
@@ -4133,7 +4135,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -4351,7 +4353,7 @@ module.exports = __webpack_require__(121);
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -5216,7 +5218,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_emotion__ = __webpack_require__(205);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_dom__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_react_dom__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_prop_types__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_input_autosize__ = __webpack_require__(212);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_input_autosize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_react_input_autosize__);
@@ -10029,7 +10031,7 @@ var index$1 = manageState(Select);
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -10284,7 +10286,7 @@ module.exports = EventPluginRegistry;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var ReactErrorUtils = __webpack_require__(40);
 
@@ -11028,7 +11030,7 @@ module.exports = createMicrosoftUnsafeLocalFunction;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var ReactPropTypesSecret = __webpack_require__(153);
 var propTypesFactory = __webpack_require__(61);
@@ -11170,7 +11172,7 @@ module.exports = LinkedValueUtils;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -11584,7 +11586,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var ReactCurrentOwner = __webpack_require__(12);
 var ReactInstanceMap = __webpack_require__(27);
@@ -12638,7 +12640,7 @@ module.exports = ReactDOMComponentFlags;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -12769,7 +12771,7 @@ module.exports = getTextContentAccessor;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13807,7 +13809,7 @@ module.exports = ReactDOMSelect;
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var ReactCompositeComponent = __webpack_require__(158);
@@ -13940,7 +13942,7 @@ module.exports = instantiateReactComponent;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var React = __webpack_require__(18);
 
@@ -14015,7 +14017,7 @@ module.exports = ReactEmptyComponent;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -14086,7 +14088,7 @@ module.exports = ReactHostComponent;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var ReactCurrentOwner = __webpack_require__(12);
 var REACT_ELEMENT_TYPE = __webpack_require__(160);
@@ -14895,7 +14897,7 @@ module.exports = getActiveElement;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var DOMLazyTree = __webpack_require__(22);
 var DOMProperty = __webpack_require__(20);
@@ -15464,7 +15466,7 @@ module.exports = getHostComponentFromComposite;
 exports.__esModule = true;
 exports.default = exports.EXITING = exports.ENTERED = exports.ENTERING = exports.EXITED = exports.UNMOUNTED = void 0;
 
-var PropTypes = _interopRequireWildcard(__webpack_require__(3));
+var PropTypes = _interopRequireWildcard(__webpack_require__(2));
 
 var _react = _interopRequireDefault(__webpack_require__(1));
 
@@ -16240,7 +16242,7 @@ exports.__esModule = true;
 exports.transitionTimeout = transitionTimeout;
 exports.classNamesShape = exports.timeoutsShape = void 0;
 
-var _propTypes = _interopRequireDefault(__webpack_require__(3));
+var _propTypes = _interopRequireDefault(__webpack_require__(2));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16294,7 +16296,7 @@ exports.classNamesShape = classNamesShape;
 exports.__esModule = true;
 exports.default = void 0;
 
-var _propTypes = _interopRequireDefault(__webpack_require__(3));
+var _propTypes = _interopRequireDefault(__webpack_require__(2));
 
 var _react = _interopRequireDefault(__webpack_require__(1));
 
@@ -16513,7 +16515,7 @@ var _classnames = __webpack_require__(15);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -16563,6 +16565,10 @@ var _Vec2Widget2 = _interopRequireDefault(_Vec2Widget);
 
 var _entity = __webpack_require__(16);
 
+var _UploadInputWidget = __webpack_require__(224);
+
+var _UploadInputWidget2 = _interopRequireDefault(_UploadInputWidget);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class PropertyRow extends _react2.default.Component {
@@ -16571,10 +16577,10 @@ class PropertyRow extends _react2.default.Component {
     var _this;
 
     _this = super(props);
-    this.id = props.componentname + ':' + props.name;
+    this.id = props.componentname + ":" + props.name;
 
-    if (['position', 'rotation', 'scale'].indexOf(this.props.componentname) !== -1) {
-      _Events2.default.on('entitytransformed', (0, _lodash2.default)(function (entity) {
+    if (["position", "rotation", "scale"].indexOf(this.props.componentname) !== -1) {
+      _Events2.default.on("entitytransformed", (0, _lodash2.default)(function (entity) {
         if (entity === props.entity) {
           _this.forceUpdate();
         }
@@ -16584,10 +16590,10 @@ class PropertyRow extends _react2.default.Component {
 
   getWidget() {
     var props = this.props;
-    var isMap = props.componentname === 'material' && (props.name === 'envMap' || props.name === 'src');
+    var isMap = props.componentname === "material" && (props.name === "envMap" || props.name === "src");
     var type = props.schema.type;
 
-    var value = props.schema.type === 'selector' ? props.entity.getDOMAttribute(props.componentname)[props.name] : props.data;
+    var value = props.schema.type === "selector" ? props.entity.getDOMAttribute(props.componentname)[props.name] : props.data;
 
     var widgetProps = {
       componentname: props.componentname,
@@ -16598,7 +16604,7 @@ class PropertyRow extends _react2.default.Component {
       onChange: function onChange(name, value) {
         var propertyName = props.componentname;
         if (!props.isSingle) {
-          propertyName += '.' + props.name;
+          propertyName += "." + props.name;
         }
 
         _entity.updateEntity.apply(this, [props.entity, propertyName, value]);
@@ -16606,45 +16612,49 @@ class PropertyRow extends _react2.default.Component {
       value: value
     };
     var numberWidgetProps = {
-      min: props.schema.hasOwnProperty('min') ? props.schema.min : -Infinity,
-      max: props.schema.hasOwnProperty('max') ? props.schema.max : Infinity
+      min: props.schema.hasOwnProperty("min") ? props.schema.min : -Infinity,
+      max: props.schema.hasOwnProperty("max") ? props.schema.max : Infinity
     };
 
     if (props.schema.oneOf && props.schema.oneOf.length > 0) {
       return _react2.default.createElement(_SelectWidget2.default, _extends({}, widgetProps, { options: props.schema.oneOf }));
     }
-    if (type === 'map' || isMap) {
+    if (type === "map" || isMap) {
       return _react2.default.createElement(_TextureWidget2.default, widgetProps);
     }
 
     switch (type) {
-      case 'number':
+      case "number":
         {
           return _react2.default.createElement(_NumberWidget2.default, _extends({}, widgetProps, numberWidgetProps));
         }
-      case 'int':
+      case "int":
         {
           return _react2.default.createElement(_NumberWidget2.default, _extends({}, widgetProps, numberWidgetProps, { precision: 0 }));
         }
-      case 'vec2':
+      case "vec2":
         {
           return _react2.default.createElement(_Vec2Widget2.default, widgetProps);
         }
-      case 'vec3':
+      case "vec3":
         {
           return _react2.default.createElement(_Vec3Widget2.default, widgetProps);
         }
-      case 'vec4':
+      case "vec4":
         {
           return _react2.default.createElement(_Vec4Widget2.default, widgetProps);
         }
-      case 'color':
+      case "color":
         {
           return _react2.default.createElement(_ColorWidget2.default, widgetProps);
         }
-      case 'boolean':
+      case "boolean":
         {
           return _react2.default.createElement(_BooleanWidget2.default, widgetProps);
+        }
+      case "model":
+        {
+          return _react2.default.createElement(_UploadInputWidget2.default, widgetProps);
         }
       default:
         {
@@ -16655,8 +16665,8 @@ class PropertyRow extends _react2.default.Component {
 
   render() {
     var props = this.props;
-    var value = props.schema.type === 'selector' ? props.entity.getDOMAttribute(props.componentname)[props.name] : JSON.stringify(props.data);
-    var title = props.name + '\n - type: ' + props.schema.type + '\n - value: ' + value;
+    var value = props.schema.type === "selector" ? props.entity.getDOMAttribute(props.componentname)[props.name] : JSON.stringify(props.data);
+    var title = props.name + "\n - type: " + props.schema.type + "\n - value: " + value;
 
     var className = (0, _classnames2.default)({
       propertyRow: true,
@@ -16664,11 +16674,11 @@ class PropertyRow extends _react2.default.Component {
     });
 
     return _react2.default.createElement(
-      'div',
+      "div",
       { className: className },
       _react2.default.createElement(
-        'label',
-        { htmlFor: this.id, className: 'text', title: title },
+        "label",
+        { htmlFor: this.id, className: "text", title: title },
         props.name
       ),
       this.getWidget(props.schema.type)
@@ -16680,7 +16690,8 @@ PropertyRow.propTypes = {
   componentname: _propTypes2.default.string.isRequired,
   id: _propTypes2.default.string,
   name: _propTypes2.default.string.isRequired,
-  schema: _propTypes2.default.object.isRequired
+  schema: _propTypes2.default.object.isRequired,
+  entity: _propTypes2.default.object
 };
 
 /***/ }),
@@ -16694,7 +16705,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -16761,7 +16772,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -16868,7 +16879,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -16890,7 +16901,7 @@ class InputWidget extends React.Component {
       }
     };
 
-    this.state = { value: this.props.value || '' };
+    this.state = { value: this.props.value || "" };
   }
 
   componentWillReceiveProps(newProps) {
@@ -16900,10 +16911,10 @@ class InputWidget extends React.Component {
   }
 
   render() {
-    return React.createElement('input', {
-      type: 'text',
-      className: 'string',
-      value: this.state.value || '',
+    return React.createElement("input", {
+      type: "text",
+      className: "string",
+      value: this.state.value || "",
       onChange: this.onChange
     });
   }
@@ -16928,7 +16939,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17013,7 +17024,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17268,7 +17279,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17349,7 +17360,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17428,7 +17439,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17503,7 +17514,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17579,7 +17590,7 @@ Collapsible.defaultProps = {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(223), __webpack_require__(225), __webpack_require__(226)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(227), __webpack_require__(229), __webpack_require__(230)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -17798,7 +17809,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = ['visible', 'position', 'scale', 'rotation'];
+exports.default = ["visible", "position", "scale", "rotation"];
 
 /***/ }),
 /* 104 */
@@ -17811,7 +17822,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -17952,34 +17963,34 @@ var _Main = __webpack_require__(197);
 
 var _Main2 = _interopRequireDefault(_Main);
 
-var _cameras = __webpack_require__(242);
+var _cameras = __webpack_require__(246);
 
 var _utils = __webpack_require__(17);
 
 var _entity = __webpack_require__(16);
 
-var _GLTFExporter = __webpack_require__(243);
+var _GLTFExporter = __webpack_require__(247);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* global VERSION BUILD_TIMESTAMP COMMIT_HASH webFont */
-__webpack_require__(244);
+__webpack_require__(248);
 
 var Events = __webpack_require__(6);
-var Viewport = __webpack_require__(245);
-var AssetsLoader = __webpack_require__(249);
-var Shortcuts = __webpack_require__(250);
+var Viewport = __webpack_require__(249);
+var AssetsLoader = __webpack_require__(253);
+var Shortcuts = __webpack_require__(254);
 
 // eslint-disable-line no-unused-vars
 
-__webpack_require__(251);
+__webpack_require__(255);
 
 function Inspector() {
   var _this = this;
 
   this.assetsLoader = new AssetsLoader();
   this.exporters = { gltf: new THREE.GLTFExporter() };
-  this.history = __webpack_require__(255);
+  this.history = __webpack_require__(259);
   this.isFirstOpen = true;
   this.modules = {};
   this.on = Events.on;
@@ -17999,7 +18010,7 @@ function Inspector() {
       _this.init();
       return;
     }
-    _this.sceneEl.addEventListener('loaded', _this.init.bind(_this), {
+    _this.sceneEl.addEventListener("loaded", _this.init.bind(_this), {
       once: true
     });
   };
@@ -18012,13 +18023,13 @@ Inspector.prototype = {
 
     // Wait for camera.
     if (!this.sceneEl.camera) {
-      this.sceneEl.addEventListener('camera-set-active', function () {
+      this.sceneEl.addEventListener("camera-set-active", function () {
         _this2.init();
       }, { once: true });
       return;
     }
 
-    this.container = document.querySelector('.a-canvas');
+    this.container = document.querySelector(".a-canvas");
     (0, _cameras.initCameras)(this);
     this.initUI();
   },
@@ -18032,21 +18043,21 @@ Inspector.prototype = {
     this.selected = null;
 
     // Init React.
-    var div = document.createElement('div');
-    div.id = 'aframeInspector';
-    div.setAttribute('data-aframe-inspector', 'app');
+    var div = document.createElement("div");
+    div.id = "aframeInspector";
+    div.setAttribute("data-aframe-inspector", "app");
     document.body.appendChild(div);
     _reactDom2.default.render(_react2.default.createElement(_Main2.default, null), div);
 
     this.scene = this.sceneEl.object3D;
     this.helpers = {};
     this.sceneHelpers = new THREE.Scene();
-    this.sceneHelpers.userData.source = 'INSPECTOR';
+    this.sceneHelpers.userData.source = "INSPECTOR";
     this.sceneHelpers.visible = true;
     this.inspectorActive = false;
 
     this.viewport = new Viewport(this);
-    Events.emit('windowresize');
+    Events.emit("windowresize");
 
     this.sceneEl.object3D.traverse(function (node) {
       _this3.addHelper(node);
@@ -18059,7 +18070,7 @@ Inspector.prototype = {
   removeObject: function removeObject(object) {
     // Remove just the helper as the object will be deleted by A-Frame
     this.removeHelpers(object);
-    Events.emit('objectremove', object);
+    Events.emit("objectremove", object);
   },
 
   addHelper: function () {
@@ -18104,7 +18115,7 @@ Inspector.prototype = {
       if (helper) {
         _this4.sceneHelpers.remove(helper);
         delete _this4.helpers[node.uuid];
-        Events.emit('helperremove', _this4.helpers[node.uuid]);
+        Events.emit("helperremove", _this4.helpers[node.uuid]);
       }
     });
   },
@@ -18120,7 +18131,7 @@ Inspector.prototype = {
     }
 
     if (entity && emit === undefined) {
-      Events.emit('entityselect', entity);
+      Events.emit("entityselect", entity);
     }
 
     // Update helper visibilities.
@@ -18141,7 +18152,7 @@ Inspector.prototype = {
   initEvents: function initEvents() {
     var _this6 = this;
 
-    window.addEventListener('keydown', function (evt) {
+    window.addEventListener("keydown", function (evt) {
       // Alt + Ctrl + i: Shorcut to toggle the inspector
       var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
       if (shortcutPressed) {
@@ -18149,22 +18160,22 @@ Inspector.prototype = {
       }
     });
 
-    Events.on('entityselect', function (entity) {
+    Events.on("entityselect", function (entity) {
       _this6.selectEntity(entity, false);
     });
 
-    Events.on('inspectortoggle', function (active) {
+    Events.on("inspectortoggle", function (active) {
       _this6.inspectorActive = active;
       _this6.sceneHelpers.visible = _this6.inspectorActive;
     });
 
-    Events.on('entitycreate', function (definition) {
+    Events.on("entitycreate", function (definition) {
       (0, _entity.createEntity)(definition, function (entity) {
         _this6.selectEntity(entity);
       });
     });
 
-    document.addEventListener('child-detached', function (event) {
+    document.addEventListener("child-detached", function (event) {
       var entity = event.detail.el;
       AFRAME.INSPECTOR.removeObject(entity.object3D);
     });
@@ -18186,7 +18197,7 @@ Inspector.prototype = {
       return;
     }
     this.selected = object3D;
-    Events.emit('objectselect', object3D);
+    Events.emit("objectselect", object3D);
   },
 
   deselect: function deselect() {
@@ -18209,15 +18220,15 @@ Inspector.prototype = {
    */
   open: function open(focusEl) {
     this.opened = true;
-    Events.emit('inspectortoggle', true);
+    Events.emit("inspectortoggle", true);
 
-    if (this.sceneEl.hasAttribute('embedded')) {
+    if (this.sceneEl.hasAttribute("embedded")) {
       // Remove embedded styles, but keep track of it.
-      this.sceneEl.removeAttribute('embedded');
-      this.sceneEl.setAttribute('aframe-inspector-removed-embedded');
+      this.sceneEl.removeAttribute("embedded");
+      this.sceneEl.setAttribute("aframe-inspector-removed-embedded");
     }
 
-    document.body.classList.add('aframe-inspector-opened');
+    document.body.classList.add("aframe-inspector-opened");
     this.sceneEl.resize();
     this.sceneEl.pause();
     this.sceneEl.exitVR();
@@ -18228,13 +18239,13 @@ Inspector.prototype = {
     this.sceneEl.isPlaying = true;
     this.cursor.play();
 
-    if (!focusEl && this.isFirstOpen && AFRAME.utils.getUrlParameter('inspector')) {
+    if (!focusEl && this.isFirstOpen && AFRAME.utils.getUrlParameter("inspector")) {
       // Focus entity with URL parameter on first open.
-      focusEl = document.getElementById(AFRAME.utils.getUrlParameter('inspector'));
+      focusEl = document.getElementById(AFRAME.utils.getUrlParameter("inspector"));
     }
     if (focusEl) {
       this.selectEntity(focusEl);
-      Events.emit('objectfocus', focusEl.object3D);
+      Events.emit("objectfocus", focusEl.object3D);
     }
     this.isFirstOpen = false;
   },
@@ -18245,7 +18256,7 @@ Inspector.prototype = {
    */
   close: function close() {
     this.opened = false;
-    Events.emit('inspectortoggle', false);
+    Events.emit("inspectortoggle", false);
 
     // Untrick scene when we enabled this to run the cursor tick.
     this.sceneEl.isPlaying = false;
@@ -18253,17 +18264,18 @@ Inspector.prototype = {
     this.sceneEl.play();
     this.cursor.pause();
 
-    if (this.sceneEl.hasAttribute('aframe-inspector-removed-embedded')) {
-      this.sceneEl.setAttribute('embedded', '');
-      this.sceneEl.removeAttribute('aframe-inspector-removed-embedded');
+    if (this.sceneEl.hasAttribute("aframe-inspector-removed-embedded")) {
+      this.sceneEl.setAttribute("embedded", "");
+      this.sceneEl.removeAttribute("aframe-inspector-removed-embedded");
     }
-    document.body.classList.remove('aframe-inspector-opened');
+    document.body.classList.remove("aframe-inspector-opened");
     this.sceneEl.resize();
     Shortcuts.disable();
   }
 };
 
 var inspector = AFRAME.INSPECTOR = new Inspector();
+console.log(inspector);
 
 /***/ }),
 /* 107 */
@@ -22065,7 +22077,7 @@ module.exports = ReactRef;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -22561,7 +22573,7 @@ module.exports = ReactComponentBrowserEnvironment;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var DOMLazyTree = __webpack_require__(22);
 var ExecutionEnvironment = __webpack_require__(8);
@@ -22963,7 +22975,7 @@ module.exports = ReactDOMIDOperations;
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var AutoFocusUtils = __webpack_require__(141);
@@ -24662,7 +24674,7 @@ module.exports = getVendorPrefixedEventName;
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var DOMPropertyOperations = __webpack_require__(75);
@@ -25097,7 +25109,7 @@ module.exports = ReactDOMOption;
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var LinkedValueUtils = __webpack_require__(47);
@@ -25260,7 +25272,7 @@ module.exports = ReactDOMTextarea;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var ReactComponentEnvironment = __webpack_require__(48);
 var ReactInstanceMap = __webpack_require__(27);
@@ -25866,7 +25878,7 @@ module.exports = ReactChildReconciler;
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var React = __webpack_require__(18);
@@ -27238,7 +27250,7 @@ module.exports = ReactDOMEmptyComponent;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var invariant = __webpack_require__(0);
 
@@ -27377,7 +27389,7 @@ module.exports = {
 
 
 
-var _prodInvariant = __webpack_require__(2),
+var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var DOMChildrenOperations = __webpack_require__(44);
@@ -28919,7 +28931,7 @@ module.exports = SelectEventPlugin;
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var EventListener = __webpack_require__(83);
 var EventPropagators = __webpack_require__(24);
@@ -29829,7 +29841,7 @@ module.exports = '15.6.2';
 
 
 
-var _prodInvariant = __webpack_require__(2);
+var _prodInvariant = __webpack_require__(3);
 
 var ReactCurrentOwner = __webpack_require__(12);
 var ReactDOMComponentTree = __webpack_require__(7);
@@ -29915,27 +29927,27 @@ var _Sidebar = __webpack_require__(198);
 
 var _Sidebar2 = _interopRequireDefault(_Sidebar);
 
-var _ModalTextures = __webpack_require__(233);
+var _ModalTextures = __webpack_require__(237);
 
 var _ModalTextures2 = _interopRequireDefault(_ModalTextures);
 
-var _ModalHelp = __webpack_require__(235);
+var _ModalHelp = __webpack_require__(239);
 
 var _ModalHelp2 = _interopRequireDefault(_ModalHelp);
 
-var _SceneGraph = __webpack_require__(236);
+var _SceneGraph = __webpack_require__(240);
 
 var _SceneGraph2 = _interopRequireDefault(_SceneGraph);
 
-var _CameraToolbar = __webpack_require__(239);
+var _CameraToolbar = __webpack_require__(243);
 
 var _CameraToolbar2 = _interopRequireDefault(_CameraToolbar);
 
-var _TransformToolbar = __webpack_require__(240);
+var _TransformToolbar = __webpack_require__(244);
 
 var _TransformToolbar2 = _interopRequireDefault(_TransformToolbar);
 
-var _ViewportHUD = __webpack_require__(241);
+var _ViewportHUD = __webpack_require__(245);
 
 var _ViewportHUD2 = _interopRequireDefault(_ViewportHUD);
 
@@ -29943,13 +29955,13 @@ var _utils = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-THREE.ImageUtils.crossOrigin = '';
+THREE.ImageUtils.crossOrigin = "";
 
 var Events = __webpack_require__(6);
 
 
 // Megahack to include font-awesome.
-(0, _utils.injectCSS)('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
+(0, _utils.injectCSS)("https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css");
 
 class Main extends _react2.default.Component {
   constructor(props) {
@@ -29987,8 +29999,8 @@ class Main extends _react2.default.Component {
       }
     };
 
-    Events.on('togglesidebar', function (event) {
-      if (event.which === 'all') {
+    Events.on("togglesidebar", function (event) {
+      if (event.which === "all") {
         if (_this.state.visible.scenegraph || _this.state.visible.attributes) {
           _this.setState({
             visible: {
@@ -30004,7 +30016,7 @@ class Main extends _react2.default.Component {
             }
           });
         }
-      } else if (event.which === 'attributes') {
+      } else if (event.which === "attributes") {
         _this.setState(function (prevState) {
           return {
             visible: {
@@ -30012,7 +30024,7 @@ class Main extends _react2.default.Component {
             }
           };
         });
-      } else if (event.which === 'scenegraph') {
+      } else if (event.which === "scenegraph") {
         _this.setState(function (prevState) {
           return {
             visible: {
@@ -30029,7 +30041,7 @@ class Main extends _react2.default.Component {
   componentDidMount() {
     var _this2 = this;
 
-    Events.on('opentexturesmodal', function (selectedTexture, textureOnClose) {
+    Events.on("opentexturesmodal", function (selectedTexture, textureOnClose) {
       this.setState({
         selectedTexture: selectedTexture,
         isModalTexturesOpen: true,
@@ -30037,15 +30049,15 @@ class Main extends _react2.default.Component {
       });
     }.bind(this));
 
-    Events.on('entityselect', function (entity) {
+    Events.on("entityselect", function (entity) {
       _this2.setState({ entity: entity });
     });
 
-    Events.on('inspectortoggle', function (enabled) {
+    Events.on("inspectortoggle", function (enabled) {
       _this2.setState({ inspectorEnabled: enabled });
     });
 
-    Events.on('openhelpmodal', function () {
+    Events.on("openhelpmodal", function () {
       _this2.setState({ isHelpOpen: true });
     });
   }
@@ -30058,15 +30070,15 @@ class Main extends _react2.default.Component {
       return null;
     }
     return _react2.default.createElement(
-      'div',
-      { className: 'toggle-sidebar right' },
-      _react2.default.createElement('a', {
+      "div",
+      { className: "toggle-sidebar right" },
+      _react2.default.createElement("a", {
         onClick: function onClick() {
           _this3.setState({ visible: { attributes: true } });
           _this3.forceUpdate();
         },
-        className: 'fa fa-plus',
-        title: 'Show components'
+        className: "fa fa-plus",
+        title: "Show components"
       })
     );
   }
@@ -30078,38 +30090,38 @@ class Main extends _react2.default.Component {
       return null;
     }
     return _react2.default.createElement(
-      'div',
-      { className: 'toggle-sidebar left' },
-      _react2.default.createElement('a', {
+      "div",
+      { className: "toggle-sidebar left" },
+      _react2.default.createElement("a", {
         onClick: function onClick() {
           _this4.setState({ visible: { scenegraph: true } });
           _this4.forceUpdate();
         },
-        className: 'fa fa-plus',
-        title: 'Show scenegraph'
+        className: "fa fa-plus",
+        title: "Show scenegraph"
       })
     );
   }
 
   render() {
     var scene = this.state.sceneEl;
-    var toggleButtonText = this.state.inspectorEnabled ? 'Back to Scene' : 'Inspect Scene';
+    var toggleButtonText = this.state.inspectorEnabled ? "Back to Scene" : "Inspect Scene";
 
     return _react2.default.createElement(
-      'div',
+      "div",
       null,
       _react2.default.createElement(
-        'a',
-        { className: 'toggle-edit', onClick: this.toggleEdit },
+        "a",
+        { className: "toggle-edit", onClick: this.toggleEdit },
         toggleButtonText
       ),
       this.renderSceneGraphToggle(),
       this.renderComponentsToggle(),
       _react2.default.createElement(
-        'div',
+        "div",
         {
-          id: 'inspectorContainer',
-          className: this.state.inspectorEnabled ? '' : 'hidden'
+          id: "inspectorContainer",
+          className: this.state.inspectorEnabled ? "" : "hidden"
         },
         _react2.default.createElement(_SceneGraph2.default, {
           scene: scene,
@@ -30117,15 +30129,15 @@ class Main extends _react2.default.Component {
           visible: this.state.visible.scenegraph
         }),
         _react2.default.createElement(
-          'div',
-          { id: 'viewportBar' },
+          "div",
+          { id: "viewportBar" },
           _react2.default.createElement(_CameraToolbar2.default, null),
           _react2.default.createElement(_ViewportHUD2.default, null),
           _react2.default.createElement(_TransformToolbar2.default, null)
         ),
         _react2.default.createElement(
-          'div',
-          { id: 'rightPanel' },
+          "div",
+          { id: "rightPanel" },
           _react2.default.createElement(_Sidebar2.default, {
             entity: this.state.entity,
             visible: this.state.visible.attributes
@@ -30137,7 +30149,7 @@ class Main extends _react2.default.Component {
         onClose: this.onCloseHelpModal
       }),
       _react2.default.createElement(_ModalTextures2.default, {
-        ref: 'modaltextures',
+        ref: "modaltextures",
         isOpen: this.state.isModalTexturesOpen,
         selectedTexture: this.state.selectedTexture,
         onClose: this.onModalTextureOnClose
@@ -30162,7 +30174,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -30185,7 +30197,7 @@ class Sidebar extends _react2.default.Component {
 
     this.handleToggle = function () {
       _this.setState({ open: !_this.state.open });
-      ga('send', 'event', 'Components', 'toggleSidebar');
+      ga("send", "event", "Components", "toggleSidebar");
     };
 
     this.state = { open: false };
@@ -30194,11 +30206,11 @@ class Sidebar extends _react2.default.Component {
   componentDidMount() {
     var _this2 = this;
 
-    _Events2.default.on('componentremove', function (event) {
+    _Events2.default.on("componentremove", function (event) {
       _this2.forceUpdate();
     });
 
-    _Events2.default.on('componentadd', function (event) {
+    _Events2.default.on("componentadd", function (event) {
       _this2.forceUpdate();
     });
   }
@@ -30208,12 +30220,12 @@ class Sidebar extends _react2.default.Component {
     var visible = this.props.visible;
     if (entity && visible) {
       return _react2.default.createElement(
-        'div',
-        { id: 'sidebar' },
+        "div",
+        { id: "sidebar" },
         _react2.default.createElement(_ComponentsContainer2.default, { entity: entity })
       );
     } else {
-      return _react2.default.createElement('div', null);
+      return _react2.default.createElement("div", null);
     }
   }
 }
@@ -30304,7 +30316,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -30312,11 +30324,11 @@ var _AddComponent = __webpack_require__(201);
 
 var _AddComponent2 = _interopRequireDefault(_AddComponent);
 
-var _Component = __webpack_require__(222);
+var _Component = __webpack_require__(223);
 
 var _Component2 = _interopRequireDefault(_Component);
 
-var _CommonComponents = __webpack_require__(230);
+var _CommonComponents = __webpack_require__(234);
 
 var _CommonComponents2 = _interopRequireDefault(_CommonComponents);
 
@@ -30353,8 +30365,8 @@ class ComponentsContainer extends _react2.default.Component {
     });
 
     return _react2.default.createElement(
-      'div',
-      { className: 'components' },
+      "div",
+      { className: "components" },
       _react2.default.createElement(_CommonComponents2.default, { entity: entity }),
       _react2.default.createElement(_AddComponent2.default, { entity: entity }),
       renderedComponents
@@ -30381,7 +30393,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -30393,9 +30405,13 @@ var _reactSelect = __webpack_require__(37);
 
 var _reactSelect2 = _interopRequireDefault(_reactSelect);
 
+var _whiteListOptions = __webpack_require__(222);
+
+var _whiteListOptions2 = _interopRequireDefault(_whiteListOptions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DELIMITER = ' ';
+var DELIMITER = " ";
 
 class AddComponent extends _react2.default.Component {
   constructor() {
@@ -30411,14 +30427,21 @@ class AddComponent extends _react2.default.Component {
       })[0];
 
       if (AFRAME.components[componentName].multiple) {
-        var id = prompt('Provide an ID for this component (e.g., \'foo\' for ' + componentName + '__foo).');
-        componentName = id ? componentName + '__' + id : componentName;
+        // const id = prompt(
+        //   `Provide an ID for this component (e.g., 'foo' for ${componentName}__foo).`
+        // );
+        // componentName = id ? `${componentName}__${id}` : componentName;
+        componentName = componentName + "__" + _this.randomId();
       }
 
-      entity.setAttribute(componentName, '');
-      _Events2.default.emit('componentadd', { entity: entity, component: componentName });
-      ga('send', 'event', 'Components', 'addComponent', componentName);
+      entity.setAttribute(componentName, "");
+      _Events2.default.emit("componentadd", { entity: entity, component: componentName });
+      ga("send", "event", "Components", "addComponent", componentName);
     }, _temp;
+  }
+
+  randomId() {
+    return Math.random().toString(36).substring(2, 9);
   }
 
   /**
@@ -30431,14 +30454,27 @@ class AddComponent extends _react2.default.Component {
    * Component dropdown options.
    */
   getComponentsOptions() {
-    var usedComponents = Object.keys(this.props.entity.components);
-    var commonOptions = Object.keys(AFRAME.components).filter(function (componentName) {
-      return AFRAME.components[componentName].multiple || usedComponents.indexOf(componentName) === -1;
-    }).sort().map(function (value) {
-      return { value: value, label: value, origin: 'loaded' };
-    });
+    // const usedComponents = Object.keys(this.props.entity.components);
+    // var commonOptions = Object.keys(AFRAME.components)
+    //   .filter(function(componentName) {
+    //     return (
+    //       AFRAME.components[componentName].multiple ||
+    //       usedComponents.indexOf(componentName) === -1
+    //     );
+    //   })
+    //   .sort()
+    //   .map(function(value) {
+    //     return { value: value, label: value, origin: "loaded" };
+    //   });
 
-    this.options = commonOptions;
+    this.options = _whiteListOptions2.default.map(function (value) {
+      return {
+        value: value,
+        label: value,
+        origin: "loaded"
+      };
+    });
+    console.log(this.options);
     this.options = this.options.sort(function (a, b) {
       return a.label === b.label ? 0 : a.label < b.label ? -1 : 1;
     });
@@ -30446,45 +30482,45 @@ class AddComponent extends _react2.default.Component {
 
   renderOption(option) {
     var bullet = _react2.default.createElement(
-      'span',
-      { title: 'Component already loaded in the scene' },
-      '\u25CF'
+      "span",
+      { title: "Component already loaded in the scene" },
+      "\u25CF"
     );
     return _react2.default.createElement(
-      'strong',
-      { className: 'option' },
+      "strong",
+      { className: "option" },
       option.label,
-      ' ',
-      option.origin === 'loaded' ? bullet : ''
+      " ",
+      option.origin === "loaded" ? bullet : ""
     );
   }
 
   render() {
     var entity = this.props.entity;
     if (!entity) {
-      return _react2.default.createElement('div', null);
+      return _react2.default.createElement("div", null);
     }
 
     this.getComponentsOptions();
 
     return _react2.default.createElement(
-      'div',
-      { id: 'addComponentContainer' },
+      "div",
+      { id: "addComponentContainer" },
       _react2.default.createElement(
-        'p',
-        { id: 'addComponentHeader' },
-        'COMPONENTS'
+        "p",
+        { id: "addComponentHeader" },
+        "COMPONENTS"
       ),
       _react2.default.createElement(_reactSelect2.default, {
-        id: 'addComponent',
-        className: 'addComponent',
-        classNamePrefix: 'select',
-        ref: 'select',
+        id: "addComponent",
+        className: "addComponent",
+        classNamePrefix: "select",
+        ref: "select",
         options: this.options,
         simpleValue: true,
         clearable: true,
-        placeholder: 'Add component...',
-        noResultsText: 'No components found',
+        placeholder: "Add component...",
+        noResultsText: "No components found",
         onChange: this.addComponent,
         optionRenderer: this.renderOption,
         searchable: true
@@ -30503,7 +30539,7 @@ AddComponent.propTypes = {
 };
 function isComponentInstanced(entity, componentName) {
   for (var component in entity.components) {
-    if (component.substr(0, component.indexOf('__')) === componentName) {
+    if (component.substr(0, component.indexOf("__")) === componentName) {
       return true;
     }
   }
@@ -32331,7 +32367,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -32665,7 +32701,7 @@ module.exports = {
 exports.__esModule = true;
 exports.default = void 0;
 
-var PropTypes = _interopRequireWildcard(__webpack_require__(3));
+var PropTypes = _interopRequireWildcard(__webpack_require__(2));
 
 var _addClass = _interopRequireDefault(__webpack_require__(216));
 
@@ -33031,7 +33067,7 @@ module.exports = function removeClass(element, className) {
 exports.__esModule = true;
 exports.default = void 0;
 
-var _propTypes = _interopRequireDefault(__webpack_require__(3));
+var _propTypes = _interopRequireDefault(__webpack_require__(2));
 
 var _react = _interopRequireDefault(__webpack_require__(1));
 
@@ -33345,12 +33381,24 @@ function getNextChildMapping(nextProps, prevChildMapping, onExited) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = ["text", "gltf-model"];
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -33390,13 +33438,13 @@ class Component extends _react2.default.Component {
     this.removeComponent = function (event) {
       var componentName = _this.props.name;
       event.stopPropagation();
-      if (confirm('Do you really want to remove component `' + componentName + '`?')) {
+      if (confirm("Do you really want to remove component `" + componentName + "`?")) {
         _this.props.entity.removeAttribute(componentName);
-        _Events2.default.emit('componentremove', {
+        _Events2.default.emit("componentremove", {
           entity: _this.props.entity,
           component: componentName
         });
-        ga('send', 'event', 'Components', 'removeComponent', componentName);
+        ga("send", "event", "Components", "removeComponent", componentName);
       }
     };
 
@@ -33405,7 +33453,7 @@ class Component extends _react2.default.Component {
 
       if (isSingleProperty(componentData.schema)) {
         var componentName = _this.props.name;
-        var schema = AFRAME.components[componentName.split('__')[0]].schema;
+        var schema = AFRAME.components[componentName.split("__")[0]].schema;
         return _react2.default.createElement(_PropertyRow2.default, {
           key: componentName,
           name: componentName,
@@ -33439,19 +33487,21 @@ class Component extends _react2.default.Component {
   componentDidMount() {
     var _this2 = this;
 
-    var clipboard = new _clipboard2.default('[data-action="copy-component-to-clipboard"]', {
+    // eslint-disable-next-line quotes
+    var trigger = '[data-action="copy-component-to-clipboard"]';
+    var clipboard = new _clipboard2.default(trigger, {
       text: function text(trigger) {
-        var componentName = trigger.getAttribute('data-component').toLowerCase();
-        ga('send', 'event', 'Components', 'copyComponentToClipboard', componentName);
+        var componentName = trigger.getAttribute("data-component").toLowerCase();
+        ga("send", "event", "Components", "copyComponentToClipboard", componentName);
         return (0, _entity.getComponentClipboardRepresentation)(_this2.state.entity, componentName);
       }
     });
-    clipboard.on('error', function (e) {
+    clipboard.on("error", function (e) {
       // @todo Show the error in the UI
       console.error(e);
     });
 
-    _Events2.default.on('entityupdate', function (detail) {
+    _Events2.default.on("entityupdate", function (detail) {
       if (detail.entity !== _this2.props.entity) {
         return;
       }
@@ -33477,49 +33527,50 @@ class Component extends _react2.default.Component {
 
   render() {
     var componentName = this.props.name;
-    var subComponentName = '';
-    if (componentName.indexOf('__') !== -1) {
+    var subComponentName = "";
+    if (componentName.indexOf("__") !== -1) {
       subComponentName = componentName;
-      componentName = componentName.substr(0, componentName.indexOf('__'));
+      componentName = componentName.substr(0, componentName.indexOf("__"));
     }
 
     return _react2.default.createElement(
       _Collapsible2.default,
       { collapsed: this.props.isCollapsed },
       _react2.default.createElement(
-        'div',
-        { className: 'componentHeader collapsible-header' },
+        "div",
+        { className: "componentHeader collapsible-header" },
         _react2.default.createElement(
-          'span',
+          "span",
           {
-            className: 'componentTitle',
-            title: subComponentName || componentName },
+            className: "componentTitle",
+            title: subComponentName || componentName
+          },
           _react2.default.createElement(
-            'span',
+            "span",
             null,
             subComponentName || componentName
           )
         ),
         _react2.default.createElement(
-          'div',
-          { className: 'componentHeaderActions' },
-          _react2.default.createElement('a', {
-            title: 'Copy to clipboard',
-            'data-action': 'copy-component-to-clipboard',
-            'data-component': subComponentName || componentName,
-            className: 'button fa fa-clipboard',
-            href: '#'
+          "div",
+          { className: "componentHeaderActions" },
+          _react2.default.createElement("a", {
+            title: "Copy to clipboard",
+            "data-action": "copy-component-to-clipboard",
+            "data-component": subComponentName || componentName,
+            className: "button fa fa-clipboard",
+            href: "#"
           }),
-          _react2.default.createElement('a', {
-            title: 'Remove component',
-            className: 'button fa fa-trash-o',
+          _react2.default.createElement("a", {
+            title: "Remove component",
+            className: "button fa fa-trash-o",
             onClick: this.removeComponent
           })
         )
       ),
       _react2.default.createElement(
-        'div',
-        { className: 'collapsible-content' },
+        "div",
+        { className: "collapsible-content" },
         this.renderPropertyRows()
       )
     );
@@ -33534,12 +33585,164 @@ Component.propTypes = {
 };
 
 /***/ }),
-/* 223 */
+/* 224 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _upload = __webpack_require__(225);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var React = __webpack_require__(1);
+class UploadInputWidget extends React.Component {
+
+  constructor(props) {
+    var _this;
+
+    _this = super(props);
+
+    this.onChange = function (e) {
+      var value = e.target.value;
+      _this.setState({ value: value });
+      if (_this.props.onChange) {
+        _this.props.onChange(_this.props.name, value);
+      }
+    };
+
+    this.handleClickUploadFile = function () {
+      _this.inputRef.click();
+    };
+
+    this.onFileChange = function (e) {
+      var file = e.target.files[0];
+      (0, _upload.uploadFile)(file).then(function (_ref) {
+        var url = _ref.data;
+
+        console.log("url", url);
+        _this.setState({ value: url });
+        if (_this.props.onChange) {
+          _this.props.onChange(_this.props.name, url);
+        }
+      }).catch(function (err) {
+        alert(err);
+      });
+    };
+
+    this.state = { value: this.props.value || "" };
+    this.inputRef = null;
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.value !== this.state.value) {
+      this.setState({ value: newProps.value });
+    }
+  }
+
+  render() {
+    var _this2 = this;
+
+    return React.createElement(
+      "div",
+      { className: "row" },
+      React.createElement("input", {
+        type: "file",
+        className: "hidden"
+        // accept only glb files
+        // accept=".glb"
+        , onChange: this.onFileChange,
+        ref: function ref(_ref2) {
+          return _this2.inputRef = _ref2;
+        }
+      }),
+      React.createElement("a", {
+        title: "Upload file",
+        className: "button fa fa-upload",
+        onClick: this.handleClickUploadFile
+      }),
+      React.createElement("input", {
+        type: "text",
+        className: "string",
+        value: this.state.value || "",
+        onChange: this.onChange
+      })
+    );
+  }
+}
+exports.default = UploadInputWidget;
+UploadInputWidget.propTypes = {
+  componentname: _propTypes2.default.string,
+  entity: _propTypes2.default.object,
+  name: _propTypes2.default.string.isRequired,
+  onChange: _propTypes2.default.func,
+  value: _propTypes2.default.any
+};
+
+/***/ }),
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.uploadFile = undefined;
+
+var _constants = __webpack_require__(226);
+
+var uploadFile = exports.uploadFile = function uploadFile(file) {
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    var formData = new FormData();
+    formData.append("fileInput", file);
+    formData.append("folderName", "temp");
+    xhr.open("POST", _constants.API_UPLOAD_FILE, true);
+    xhr.send(formData);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          resolve(response);
+        } else {
+          reject(xhr.responseText);
+        }
+      }
+    };
+  });
+};
+
+/***/ }),
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var BASE_URL = "https://cms.metaworldz.dev/api";
+
+var API_UPLOAD_FILE = exports.API_UPLOAD_FILE = BASE_URL + "/file/upload";
+
+/***/ }),
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
     if (true) {
-        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(224)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(228)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
@@ -33771,7 +33974,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /***/ }),
-/* 224 */
+/* 228 */
 /***/ (function(module, exports) {
 
 function select(element) {
@@ -33820,7 +34023,7 @@ module.exports = select;
 
 
 /***/ }),
-/* 225 */
+/* 229 */
 /***/ (function(module, exports) {
 
 function E () {
@@ -33892,11 +34095,11 @@ module.exports = E;
 
 
 /***/ }),
-/* 226 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var is = __webpack_require__(227);
-var delegate = __webpack_require__(228);
+var is = __webpack_require__(231);
+var delegate = __webpack_require__(232);
 
 /**
  * Validates all params and calls the right
@@ -33993,7 +34196,7 @@ module.exports = listen;
 
 
 /***/ }),
-/* 227 */
+/* 231 */
 /***/ (function(module, exports) {
 
 /**
@@ -34048,10 +34251,10 @@ exports.fn = function(value) {
 
 
 /***/ }),
-/* 228 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var closest = __webpack_require__(229);
+var closest = __webpack_require__(233);
 
 /**
  * Delegates event to a selector.
@@ -34132,7 +34335,7 @@ module.exports = delegate;
 
 
 /***/ }),
-/* 229 */
+/* 233 */
 /***/ (function(module, exports) {
 
 var DOCUMENT_NODE_TYPE = 9;
@@ -34171,7 +34374,7 @@ module.exports = closest;
 
 
 /***/ }),
-/* 230 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34185,11 +34388,11 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _widgets = __webpack_require__(231);
+var _widgets = __webpack_require__(235);
 
 var _DefaultComponents = __webpack_require__(103);
 
@@ -34203,7 +34406,7 @@ var _Collapsible = __webpack_require__(101);
 
 var _Collapsible2 = _interopRequireDefault(_Collapsible);
 
-var _Mixins = __webpack_require__(232);
+var _Mixins = __webpack_require__(236);
 
 var _Mixins2 = _interopRequireDefault(_Mixins);
 
@@ -34226,7 +34429,7 @@ function changeId(componentName, value) {
   var entity = AFRAME.INSPECTOR.selectedEntity;
   if (entity.id !== value) {
     entity.id = value;
-    _Events2.default.emit('entityidchange', entity);
+    _Events2.default.emit("entityidchange", entity);
   }
 }
 
@@ -34235,7 +34438,7 @@ class CommonComponents extends _react2.default.Component {
   componentDidMount() {
     var _this = this;
 
-    _Events2.default.on('entityupdate', function (detail) {
+    _Events2.default.on("entityupdate", function (detail) {
       if (detail.entity !== _this.props.entity) {
         return;
       }
@@ -34244,16 +34447,17 @@ class CommonComponents extends _react2.default.Component {
       }
     });
 
-    _Events2.default.on('refreshsidebarobject3d', function () {
+    _Events2.default.on("refreshsidebarobject3d", function () {
       _this.forceUpdate();
     });
 
+    // eslint-disable-next-line quotes
     var clipboard = new _clipboard2.default('[data-action="copy-entity-to-clipboard"]', {
       text: function text(trigger) {
         return (0, _entity.getEntityClipboardRepresentation)(_this.props.entity);
       }
     });
-    clipboard.on('error', function (e) {
+    clipboard.on("error", function (e) {
       // @todo Show the error on the UI
     });
   }
@@ -34261,10 +34465,10 @@ class CommonComponents extends _react2.default.Component {
   renderCommonAttributes() {
     var entity = this.props.entity;
     var components = entity ? entity.components : {};
-    return ['position', 'rotation', 'scale', 'visible'].map(function (componentName) {
+    return ["position", "rotation", "scale", "visible"].map(function (componentName) {
       var schema = AFRAME.components[componentName].schema;
       var data = entity.object3D[componentName];
-      if (componentName === 'rotation') {
+      if (componentName === "rotation") {
         data = {
           x: THREE.MathUtils.radToDeg(entity.object3D.rotation.x),
           y: THREE.MathUtils.radToDeg(entity.object3D.rotation.y),
@@ -34288,8 +34492,8 @@ class CommonComponents extends _react2.default.Component {
   exportToGLTF() {
     var entity = this.props.entity;
     AFRAME.INSPECTOR.exporters.gltf.parse(entity.object3D, function (buffer) {
-      var blob = new Blob([buffer], { type: 'application/octet-stream' });
-      (0, _utils.saveBlob)(blob, (entity.id || 'entity') + '.glb');
+      var blob = new Blob([buffer], { type: "application/octet-stream" });
+      (0, _utils.saveBlob)(blob, (entity.id || "entity") + ".glb");
     }, { binary: true });
   }
 
@@ -34298,27 +34502,30 @@ class CommonComponents extends _react2.default.Component {
 
     var entity = this.props.entity;
     if (!entity) {
-      return _react2.default.createElement('div', null);
+      return _react2.default.createElement("div", null);
     }
     var entityButtons = _react2.default.createElement(
-      'div',
+      "div",
       null,
       _react2.default.createElement(
-        'a',
+        "a",
         {
-          title: 'Export entity to GLTF',
-          className: 'gltfIcon',
+          title: "Export entity to GLTF",
+          className: "gltfIcon",
           onClick: function onClick(event) {
             _this2.exportToGLTF();
             event.stopPropagation();
-          } },
-        _react2.default.createElement('img', { src:  true ? 'https://aframe.io/aframe-inspector/assets/gltf.svg' : '../assets/gltf.svg' })
+          }
+        },
+        _react2.default.createElement("img", {
+          src:  true ? "https://aframe.io/aframe-inspector/assets/gltf.svg" : "../assets/gltf.svg"
+        })
       ),
-      _react2.default.createElement('a', {
-        href: '#',
-        title: 'Copy entity HTML to clipboard',
-        'data-action': 'copy-entity-to-clipboard',
-        className: 'button fa fa-clipboard',
+      _react2.default.createElement("a", {
+        href: "#",
+        title: "Copy entity HTML to clipboard",
+        "data-action": "copy-entity-to-clipboard",
+        className: "button fa fa-clipboard",
         onClick: function onClick(event) {
           return event.stopPropagation();
         }
@@ -34327,43 +34534,43 @@ class CommonComponents extends _react2.default.Component {
 
     return _react2.default.createElement(
       _Collapsible2.default,
-      { id: 'componentEntityHeader', className: 'commonComponents' },
+      { id: "componentEntityHeader", className: "commonComponents" },
       _react2.default.createElement(
-        'div',
-        { className: 'collapsible-header' },
+        "div",
+        { className: "collapsible-header" },
         (0, _entity.printEntity)(entity),
         entityButtons
       ),
       _react2.default.createElement(
-        'div',
-        { className: 'collapsible-content' },
+        "div",
+        { className: "collapsible-content" },
         _react2.default.createElement(
-          'div',
-          { className: 'propertyRow' },
+          "div",
+          { className: "propertyRow" },
           _react2.default.createElement(
-            'label',
-            { htmlFor: 'id', className: 'text' },
-            'ID'
+            "label",
+            { htmlFor: "id", className: "text" },
+            "ID"
           ),
           _react2.default.createElement(_widgets.InputWidget, {
             onChange: changeId,
             entity: entity,
-            name: 'id',
+            name: "id",
             value: entity.id
           })
         ),
         _react2.default.createElement(
-          'div',
-          { className: 'propertyRow' },
+          "div",
+          { className: "propertyRow" },
           _react2.default.createElement(
-            'label',
-            { className: 'text' },
-            'class'
+            "label",
+            { className: "text" },
+            "class"
           ),
           _react2.default.createElement(
-            'span',
+            "span",
             null,
-            entity.getAttribute('class')
+            entity.getAttribute("class")
           )
         ),
         this.renderCommonAttributes(),
@@ -34378,7 +34585,7 @@ CommonComponents.propTypes = {
 };
 
 /***/ }),
-/* 231 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34397,7 +34604,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 232 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34411,7 +34618,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -34424,9 +34631,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Events = __webpack_require__(6);
 
 function trim(s) {
-  s = s.replace(/(^\s*)|(\s*$)/gi, '');
-  s = s.replace(/[ ]{2,}/gi, ' ');
-  s = s.replace(/\n /, '\n');
+  s = s.replace(/(^\s*)|(\s*$)/gi, "");
+  s = s.replace(/[ ]{2,}/gi, " ");
+  s = s.replace(/\n /, "\n");
   return s;
 }
 
@@ -34442,7 +34649,7 @@ class Mixin extends _react2.default.Component {
         return mixin.id;
       });
 
-      return Array.prototype.slice.call(document.querySelectorAll('a-mixin')).filter(function (mixin) {
+      return Array.prototype.slice.call(document.querySelectorAll("a-mixin")).filter(function (mixin) {
         return mixinIds.indexOf(mixin.id) === -1;
       }).sort().map(function (mixin) {
         return { value: mixin.id, label: mixin.id };
@@ -34455,17 +34662,17 @@ class Mixin extends _react2.default.Component {
       _this.setState({ mixins: value });
       var mixinStr = value.map(function (v) {
         return v.value;
-      }).join(' ');
+      }).join(" ");
       console.log(mixinStr);
-      entity.setAttribute('mixin', mixinStr);
+      entity.setAttribute("mixin", mixinStr);
 
-      Events.emit('entityupdate', {
-        component: 'mixin',
+      Events.emit("entityupdate", {
+        component: "mixin",
         entity: entity,
-        property: '',
+        property: "",
         value: mixinStr
       });
-      ga('send', 'event', 'Components', 'addMixin');
+      ga("send", "event", "Components", "addMixin");
     };
 
     this.state = { mixins: this.getMixinValue() };
@@ -34475,11 +34682,12 @@ class Mixin extends _react2.default.Component {
     if (this.props.entity === prevProps.entity) {
       return;
     }
+    // eslint-disable-next-line react/no-did-update-set-state
     this.setState({ mixins: this.getMixinValue() });
   }
 
   getMixinValue() {
-    return (this.props.entity.getAttribute('mixin') || '').split(/\s+/g).filter(function (v) {
+    return (this.props.entity.getAttribute("mixin") || "").split(/\s+/g).filter(function (v) {
       return !!v;
     }).map(function (v) {
       return { label: v, value: v };
@@ -34488,27 +34696,27 @@ class Mixin extends _react2.default.Component {
 
   render() {
     return _react2.default.createElement(
-      'div',
-      { className: 'mixinOptions' },
+      "div",
+      { className: "mixinOptions" },
       _react2.default.createElement(
-        'div',
-        { className: 'propertyRow' },
+        "div",
+        { className: "propertyRow" },
         _react2.default.createElement(
-          'span',
-          { className: 'text' },
-          'mixins'
+          "span",
+          { className: "text" },
+          "mixins"
         ),
         _react2.default.createElement(
-          'span',
-          { className: 'mixinValue' },
+          "span",
+          { className: "mixinValue" },
           _react2.default.createElement(_reactSelect2.default, {
-            id: 'mixinSelect',
-            classNamePrefix: 'select',
-            ref: 'select',
+            id: "mixinSelect",
+            classNamePrefix: "select",
+            ref: "select",
             options: this.getMixinOptions(),
             isMulti: true,
-            placeholder: 'Add mixin...',
-            noResultsText: 'No mixins found',
+            placeholder: "Add mixin...",
+            noResultsText: "No mixins found",
             onChange: this.updateMixins.bind(this),
             simpleValue: true,
             value: this.state.mixins
@@ -34524,7 +34732,7 @@ Mixin.propTypes = {
 };
 
 /***/ }),
-/* 233 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34542,7 +34750,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -34552,7 +34760,7 @@ var _Modal2 = _interopRequireDefault(_Modal);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var insertNewAsset = __webpack_require__(234).insertNewAsset;
+var insertNewAsset = __webpack_require__(238).insertNewAsset;
 
 function getFilename(url) {
   var converted = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -35049,7 +35257,7 @@ ModalTextures.propTypes = {
 };
 
 /***/ }),
-/* 234 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35085,7 +35293,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 235 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35099,7 +35307,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -35186,7 +35394,7 @@ ModalHelp.propTypes = {
 };
 
 /***/ }),
-/* 236 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35199,7 +35407,7 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* eslint-disable no-unused-vars, react/no-danger */
 
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -35215,11 +35423,11 @@ var _lodash = __webpack_require__(28);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Entity = __webpack_require__(237);
+var _Entity = __webpack_require__(241);
 
 var _Entity2 = _interopRequireDefault(_Entity);
 
-var _Toolbar = __webpack_require__(238);
+var _Toolbar = __webpack_require__(242);
 
 var _Toolbar2 = _interopRequireDefault(_Toolbar);
 
@@ -35534,7 +35742,7 @@ function filterEntity(entity, filter) {
 }
 
 /***/ }),
-/* 237 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35548,7 +35756,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(3);
+var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -35676,7 +35884,7 @@ Entity.propTypes = {
 };
 
 /***/ }),
-/* 238 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35685,6 +35893,8 @@ Entity.propTypes = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _classnames = __webpack_require__(15);
 
@@ -35702,11 +35912,11 @@ var _utils = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var LOCALSTORAGE_MOCAP_UI = 'aframeinspectormocapuienabled';
+var LOCALSTORAGE_MOCAP_UI = "aframeinspectormocapuienabled";
 
 function filterHelpers(scene, visible) {
   scene.traverse(function (o) {
-    if (o.userData.source === 'INSPECTOR') {
+    if (o.userData.source === "INSPECTOR") {
       o.visible = visible;
     }
   });
@@ -35722,11 +35932,11 @@ function getSceneName(scene) {
  * @return {string}      Slugified string
  */
 function slugify(text) {
-  return text.toString().toLowerCase().replace(/\s+/g, '-') // Replace spaces with -
-  .replace(/[^\w\-]+/g, '-') // Replace all non-word chars with -
-  .replace(/\-\-+/g, '-') // Replace multiple - with single -
-  .replace(/^-+/, '') // Trim - from start of text
-  .replace(/-+$/, ''); // Trim - from end of text
+  return text.toString().toLowerCase().replace(/\s+/g, "-") // Replace spaces with -
+  .replace(/[^\w\-]+/g, "-") // Replace all non-word chars with -
+  .replace(/\-\-+/g, "-") // Replace multiple - with single -
+  .replace(/^-+/, "") // Trim - from start of text
+  .replace(/-+$/, ""); // Trim - from end of text
 }
 
 /**
@@ -35739,13 +35949,66 @@ class Toolbar extends _react2.default.Component {
     _this = super(props);
 
     this.writeChanges = function () {
+      console.log(AFRAME.INSPECTOR.history);
+      var scene = AFRAME.scenes[0];
+
+      // Get all entities & attributes.
+      var entities = scene.querySelectorAll("*");
+      var entitiesData = [];
+      for (var i = 0; i < entities.length; i++) {
+        var entity = entities[i];
+        // ignore aframe-injected entities
+        if (!entity.id || entity.hasAttribute("aframe-injected") || entity.hasAttribute("data-aframe-inspector")) {
+          continue;
+        }
+        var components = entity.components;
+
+        var componentsData = {};
+        for (var componentName in components) {
+          var component = components[componentName];
+          // default components are not in the schema
+          if (componentName === "position" || componentName === "rotation" || componentName === "scale") {
+            componentsData[componentName] = component.data;
+            continue;
+          }
+
+          var schema = component.schema;
+
+          if (_typeof(component.data) === "object") {
+            console.log(schema);
+            var componentData = {};
+            for (var property in schema) {
+              componentData[property] = component.data[property];
+            }
+            console.log(componentData);
+            componentsData[componentName] = componentData;
+          }
+
+          if (typeof component.data === "string") {
+            componentsData[componentName] = component.data;
+          }
+        }
+        entitiesData.push({
+          id: entity.id,
+          position: entity.object3D.position,
+          rotation: entity.object3D.rotation.toVector3(),
+          scale: entity.object3D.scale,
+          components: componentsData
+        });
+      }
+      console.log(entitiesData);
+
+      // https://metaworld-cms.s3.ap-southeast-1.amazonaws.com/temp/1665675054picture-frame.glb
+
       var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://localhost:51234/save');
+      xhr.open("PUT", "https://630cf34e53a833c5343923e3.mockapi.io/spaces/1");
       xhr.onerror = function () {
-        alert('aframe-watcher not running. This feature requires a companion service running locally. npm install aframe-watcher to save changes back to file. Read more at supermedium.com/aframe-watcher');
+        alert("aframe-watcher not running. This feature requires a companion service running locally. npm install aframe-watcher to save changes back to file. Read more at supermedium.com/aframe-watcher");
       };
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send(JSON.stringify(AFRAME.INSPECTOR.history.updates));
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({
+        entities: entitiesData
+      }));
     };
 
     this.toggleScenePlaying = function () {
@@ -35753,7 +36016,7 @@ class Toolbar extends _react2.default.Component {
         AFRAME.scenes[0].pause();
         _this.setState({ isPlaying: false });
         AFRAME.scenes[0].isPlaying = true;
-        document.getElementById('aframeInspectorMouseCursor').play();
+        document.getElementById("aframeInspectorMouseCursor").play();
         return;
       }
       AFRAME.scenes[0].isPlaying = false;
@@ -35767,19 +36030,19 @@ class Toolbar extends _react2.default.Component {
   }
 
   exportSceneToGLTF() {
-    ga('send', 'event', 'SceneGraph', 'exportGLTF');
+    ga("send", "event", "SceneGraph", "exportGLTF");
     var sceneName = getSceneName(AFRAME.scenes[0]);
     var scene = AFRAME.scenes[0].object3D;
     filterHelpers(scene, false);
     AFRAME.INSPECTOR.exporters.gltf.parse(scene, function (buffer) {
       filterHelpers(scene, true);
-      var blob = new Blob([buffer], { type: 'application/octet-stream' });
-      (0, _utils.saveBlob)(blob, sceneName + '.glb');
+      var blob = new Blob([buffer], { type: "application/octet-stream" });
+      (0, _utils.saveBlob)(blob, sceneName + ".glb");
     }, { binary: true });
   }
 
   addEntity() {
-    _Events2.default.emit('entitycreate', { element: 'a-entity', components: {} });
+    _Events2.default.emit("entitycreate", { element: "a-entity", components: {} });
   }
 
   /**
@@ -35791,35 +36054,39 @@ class Toolbar extends _react2.default.Component {
     var watcherClassNames = (0, _classnames2.default)({
       button: true,
       fa: true,
-      'fa-save': true
+      "fa-save": true
     });
-    var watcherTitle = 'Write changes with aframe-watcher.';
+    var watcherTitle = "Write changes with aframe-watcher.";
 
     return _react2.default.createElement(
-      'div',
-      { id: 'toolbar' },
+      "div",
+      { id: "toolbar" },
       _react2.default.createElement(
-        'div',
-        { className: 'toolbarActions' },
-        _react2.default.createElement('a', {
-          className: 'button fa fa-plus',
-          title: 'Add a new entity',
+        "div",
+        { className: "toolbarActions" },
+        _react2.default.createElement("a", {
+          className: "button fa fa-plus",
+          title: "Add a new entity",
           onClick: this.addEntity
         }),
-        _react2.default.createElement('a', {
-          id: 'playPauseScene',
-          className: 'button fa ' + (this.state.isPlaying ? 'fa-pause' : 'fa-play'),
-          title: this.state.isPlaying ? 'Pause scene' : 'Resume scene',
-          onClick: this.toggleScenePlaying }),
+        _react2.default.createElement("a", {
+          id: "playPauseScene",
+          className: "button fa " + (this.state.isPlaying ? "fa-pause" : "fa-play"),
+          title: this.state.isPlaying ? "Pause scene" : "Resume scene",
+          onClick: this.toggleScenePlaying
+        }),
         _react2.default.createElement(
-          'a',
+          "a",
           {
-            className: 'gltfIcon',
-            title: 'Export to GLTF',
-            onClick: this.exportSceneToGLTF },
-          _react2.default.createElement('img', { src:  true ? 'https://aframe.io/aframe-inspector/assets/gltf.svg' : '../assets/gltf.svg' })
+            className: "gltfIcon",
+            title: "Export to GLTF",
+            onClick: this.exportSceneToGLTF
+          },
+          _react2.default.createElement("img", {
+            src:  true ? "https://aframe.io/aframe-inspector/assets/gltf.svg" : "../assets/gltf.svg"
+          })
         ),
-        _react2.default.createElement('a', {
+        _react2.default.createElement("a", {
           className: watcherClassNames,
           title: watcherTitle,
           onClick: this.writeChanges
@@ -35831,7 +36098,7 @@ class Toolbar extends _react2.default.Component {
 exports.default = Toolbar;
 
 /***/ }),
-/* 239 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35907,7 +36174,7 @@ class CameraToolbar extends React.Component {
 exports.default = CameraToolbar;
 
 /***/ }),
-/* 240 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35923,7 +36190,7 @@ var React = __webpack_require__(1);
 var Events = __webpack_require__(6);
 var classNames = __webpack_require__(15);
 
-var TransformButtons = [{ value: 'translate', icon: 'fa-arrows-alt' }, { value: 'rotate', icon: 'fa-repeat' }, { value: 'scale', icon: 'fa-expand' }];
+var TransformButtons = [{ value: "translate", icon: "fa-arrows-alt" }, { value: "rotate", icon: "fa-repeat" }, { value: "scale", icon: "fa-expand" }];
 
 class TransformToolbar extends React.Component {
   constructor(props) {
@@ -35933,14 +36200,14 @@ class TransformToolbar extends React.Component {
 
     this.changeTransformMode = function (mode) {
       _this.setState({ selectedTransform: mode });
-      Events.emit('transformmodechange', mode);
-      ga('send', 'event', 'Toolbar', 'selectHelper', mode);
+      Events.emit("transformmodechange", mode);
+      ga("send", "event", "Toolbar", "selectHelper", mode);
     };
 
     this.onLocalChange = function (e) {
       var local = e.target.checked;
       _this.setState({ localSpace: local });
-      Events.emit('transformspacechanged', local ? 'local' : 'world');
+      Events.emit("transformspacechanged", local ? "local" : "world");
     };
 
     this.renderTransformButtons = function () {
@@ -35951,9 +36218,9 @@ class TransformToolbar extends React.Component {
         var classes = classNames((_classNames = {
           button: true,
           fa: true
-        }, _defineProperty(_classNames, option.icon, true), _defineProperty(_classNames, 'active', selected), _classNames));
+        }, _defineProperty(_classNames, option.icon, true), _defineProperty(_classNames, "active", selected), _classNames));
 
-        return React.createElement('a', {
+        return React.createElement("a", {
           title: option.value,
           key: i,
           onClick: this.changeTransformMode.bind(this, option.value),
@@ -35963,7 +36230,7 @@ class TransformToolbar extends React.Component {
     };
 
     this.state = {
-      selectedTransform: 'translate',
+      selectedTransform: "translate",
       localSpace: false
     };
   }
@@ -35971,39 +36238,39 @@ class TransformToolbar extends React.Component {
   componentDidMount() {
     var _this2 = this;
 
-    Events.on('transformmodechange', function (mode) {
+    Events.on("transformmodechange", function (mode) {
       _this2.setState({ selectedTransform: mode });
     });
 
-    Events.on('transformspacechange', function () {
-      Events.emit('transformspacechanged', _this2.state.localSpace ? 'world' : 'local');
+    Events.on("transformspacechange", function () {
+      Events.emit("transformspacechanged", _this2.state.localSpace ? "world" : "local");
       _this2.setState({ localSpace: !_this2.state.localSpace });
     });
   }
 
   render() {
     return React.createElement(
-      'div',
-      { id: 'transformToolbar', className: 'toolbarButtons' },
+      "div",
+      { id: "transformToolbar", className: "toolbarButtons" },
       this.renderTransformButtons(),
       React.createElement(
-        'span',
-        { className: 'local-transform' },
-        React.createElement('input', {
-          id: 'local',
-          type: 'checkbox',
-          title: 'Toggle between local and world space transforms',
-          checked: this.state.localSpace || this.state.selectedTransform === 'scale',
-          disabled: this.state.selectedTransform === 'scale',
+        "span",
+        { className: "local-transform" },
+        React.createElement("input", {
+          id: "local",
+          type: "checkbox",
+          title: "Toggle between local and world space transforms",
+          checked: this.state.localSpace || this.state.selectedTransform === "scale",
+          disabled: this.state.selectedTransform === "scale",
           onChange: this.onLocalChange
         }),
         React.createElement(
-          'label',
+          "label",
           {
-            htmlFor: 'local',
-            title: 'Toggle between local and world space transforms'
+            htmlFor: "local",
+            title: "Toggle between local and world space transforms"
           },
-          'local'
+          "local"
         )
       )
     );
@@ -36012,7 +36279,7 @@ class TransformToolbar extends React.Component {
 exports.default = TransformToolbar;
 
 /***/ }),
-/* 241 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36038,21 +36305,21 @@ class ViewportHUD extends React.Component {
   componentDidMount() {
     var _this = this;
 
-    Events.on('raycastermouseenter', function (el) {
+    Events.on("raycastermouseenter", function (el) {
       _this.setState({ hoveredEntity: el });
     });
 
-    Events.on('raycastermouseleave', function (el) {
+    Events.on("raycastermouseleave", function (el) {
       _this.setState({ hoveredEntity: el });
     });
   }
 
   render() {
     return React.createElement(
-      'div',
-      { id: 'viewportHud' },
+      "div",
+      { id: "viewportHud" },
       React.createElement(
-        'p',
+        "p",
         null,
         (0, _entity.printEntity)(this.state.hoveredEntity)
       )
@@ -36062,7 +36329,7 @@ class ViewportHUD extends React.Component {
 exports.default = ViewportHUD;
 
 /***/ }),
-/* 242 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36176,7 +36443,7 @@ function setOrthoCamera(camera, dir, ratio) {
 }
 
 /***/ }),
-/* 243 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38248,7 +38515,7 @@ function setOrthoCamera(camera, dir, ratio) {
 })();
 
 /***/ }),
-/* 244 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38270,7 +38537,7 @@ ga('create', 'UA-80530812-1', 'auto');
 ga('send', 'pageview');
 
 /***/ }),
-/* 245 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38280,15 +38547,15 @@ var _lodash = __webpack_require__(28);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _TransformControls = __webpack_require__(246);
+var _TransformControls = __webpack_require__(250);
 
 var _TransformControls2 = _interopRequireDefault(_TransformControls);
 
-var _EditorControls = __webpack_require__(247);
+var _EditorControls = __webpack_require__(251);
 
 var _EditorControls2 = _interopRequireDefault(_EditorControls);
 
-var _raycaster = __webpack_require__(248);
+var _raycaster = __webpack_require__(252);
 
 var _utils = __webpack_require__(17);
 
@@ -38309,7 +38576,7 @@ function Viewport(inspector) {
   var sceneEl = inspector.sceneEl;
 
   var originalCamera = inspector.cameras.original;
-  sceneEl.addEventListener('camera-set-active', function (event) {
+  sceneEl.addEventListener("camera-set-active", function (event) {
     // If we're in edit mode, save the newly active camera and activate when exiting.
     if (inspector.opened) {
       originalCamera = event.detail.cameraEl;
@@ -38339,7 +38606,7 @@ function Viewport(inspector) {
   var camera = inspector.camera;
   var transformControls = new THREE.TransformControls(camera, inspector.container);
   transformControls.size = 0.75;
-  transformControls.addEventListener('objectChange', function (evt) {
+  transformControls.addEventListener("objectChange", function (evt) {
     var object = transformControls.object;
     if (object === undefined) {
       return;
@@ -38349,44 +38616,44 @@ function Viewport(inspector) {
 
     updateHelpers(object);
 
-    Events.emit('refreshsidebarobject3d', object);
+    Events.emit("refreshsidebarobject3d", object);
 
     // Emit update event for watcher.
     var component = void 0;
     var value = void 0;
-    if (evt.mode === 'translate') {
-      component = 'position';
-      value = object.position.x + ' ' + object.position.y + ' ' + object.position.z;
-    } else if (evt.mode === 'rotate') {
-      component = 'rotation';
+    if (evt.mode === "translate") {
+      component = "position";
+      value = object.position.x + " " + object.position.y + " " + object.position.z;
+    } else if (evt.mode === "rotate") {
+      component = "rotation";
       var d = THREE.MathUtils.radToDeg;
-      value = d(object.rotation.x) + ' ' + d(object.rotation.y) + ' ' + d(object.rotation.z);
-    } else if (evt.mode === 'scale') {
-      component = 'scale';
-      value = object.scale.x + ' ' + object.scale.y + ' ' + object.scale.z;
+      value = d(object.rotation.x) + " " + d(object.rotation.y) + " " + d(object.rotation.z);
+    } else if (evt.mode === "scale") {
+      component = "scale";
+      value = object.scale.x + " " + object.scale.y + " " + object.scale.z;
     }
-    Events.emit('entityupdate', {
+    Events.emit("entityupdate", {
       component: component,
       entity: transformControls.object.el,
-      property: '',
+      property: "",
       value: value
     });
 
-    Events.emit('entitytransformed', transformControls.object.el);
+    Events.emit("entitytransformed", transformControls.object.el);
   });
 
-  transformControls.addEventListener('mouseDown', function () {
+  transformControls.addEventListener("mouseDown", function () {
     controls.enabled = false;
   });
 
-  transformControls.addEventListener('mouseUp', function () {
+  transformControls.addEventListener("mouseUp", function () {
     controls.enabled = true;
   });
 
   sceneHelpers.add(transformControls);
 
-  Events.on('entityupdate', function (detail) {
-    if (inspector.selectedEntity.object3DMap['mesh']) {
+  Events.on("entityupdate", function (detail) {
+    if (inspector.selectedEntity.object3DMap["mesh"]) {
       selectionBox.setFromObject(inspector.selected);
     }
   });
@@ -38398,7 +38665,7 @@ function Viewport(inspector) {
   controls.zoomSpeed = 0.05;
   controls.setAspectRatio(sceneEl.canvas.width / sceneEl.canvas.height);
 
-  Events.on('cameratoggle', function (data) {
+  Events.on("cameratoggle", function (data) {
     controls.setCamera(data.camera);
     transformControls.setCamera(data.camera);
   });
@@ -38416,27 +38683,27 @@ function Viewport(inspector) {
   }
   enableControls();
 
-  Events.on('inspectorcleared', function () {
+  Events.on("inspectorcleared", function () {
     controls.center.set(0, 0, 0);
   });
 
-  Events.on('transformmodechange', function (mode) {
+  Events.on("transformmodechange", function (mode) {
     transformControls.setMode(mode);
   });
 
-  Events.on('snapchanged', function (dist) {
+  Events.on("snapchanged", function (dist) {
     transformControls.setTranslationSnap(dist);
   });
 
-  Events.on('transformspacechanged', function (space) {
+  Events.on("transformspacechanged", function (space) {
     transformControls.setSpace(space);
   });
 
-  Events.on('objectselect', function (object) {
+  Events.on("objectselect", function (object) {
     selectionBox.visible = false;
     transformControls.detach();
     if (object && object.el) {
-      if (object.el.getObject3D('mesh')) {
+      if (object.el.getObject3D("mesh")) {
         selectionBox.setFromObject(object);
         selectionBox.visible = true;
       }
@@ -38445,18 +38712,18 @@ function Viewport(inspector) {
     }
   });
 
-  Events.on('objectfocus', function (object) {
+  Events.on("objectfocus", function (object) {
     controls.focus(object);
     transformControls.update();
   });
 
-  Events.on('geometrychanged', function (object) {
+  Events.on("geometrychanged", function (object) {
     if (object !== null) {
       selectionBox.setFromObject(object);
     }
   });
 
-  Events.on('entityupdate', function (detail) {
+  Events.on("entityupdate", function (detail) {
     var object = detail.entity.object3D;
     if (inspector.selected === object) {
       // Hack because object3D always has geometry :(
@@ -38473,42 +38740,42 @@ function Viewport(inspector) {
     updateHelpers(object);
   });
 
-  Events.on('windowresize', function () {
+  Events.on("windowresize", function () {
     camera.aspect = inspector.container.offsetWidth / inspector.container.offsetHeight;
     camera.updateProjectionMatrix();
   });
 
-  Events.on('gridvisibilitychanged', function (showGrid) {
+  Events.on("gridvisibilitychanged", function (showGrid) {
     grid.visible = showGrid;
   });
 
-  Events.on('togglegrid', function () {
+  Events.on("togglegrid", function () {
     grid.visible = !grid.visible;
   });
 
-  Events.on('inspectortoggle', function (active) {
+  Events.on("inspectortoggle", function (active) {
     if (active) {
       enableControls();
       AFRAME.scenes[0].camera = inspector.camera;
-      Array.prototype.slice.call(document.querySelectorAll('.a-enter-vr,.rs-base')).forEach(function (element) {
-        element.style.display = 'none';
+      Array.prototype.slice.call(document.querySelectorAll(".a-enter-vr,.rs-base")).forEach(function (element) {
+        element.style.display = "none";
       });
     } else {
       disableControls();
-      inspector.cameras.original.setAttribute('camera', 'active', 'true');
-      AFRAME.scenes[0].camera = inspector.cameras.original.getObject3D('camera');
-      Array.prototype.slice.call(document.querySelectorAll('.a-enter-vr,.rs-base')).forEach(function (element) {
-        element.style.display = 'block';
+      inspector.cameras.original.setAttribute("camera", "active", "true");
+      AFRAME.scenes[0].camera = inspector.cameras.original.getObject3D("camera");
+      Array.prototype.slice.call(document.querySelectorAll(".a-enter-vr,.rs-base")).forEach(function (element) {
+        element.style.display = "block";
       });
     }
-    ga('send', 'event', 'Viewport', 'toggleEditor', active);
+    ga("send", "event", "Viewport", "toggleEditor", active);
   });
 }
 
 module.exports = Viewport;
 
 /***/ }),
-/* 246 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39415,7 +39682,7 @@ module.exports = Viewport;
 })();
 
 /***/ }),
-/* 247 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39792,7 +40059,7 @@ THREE.EditorControls.prototype = Object.create(THREE.EventDispatcher.prototype);
 THREE.EditorControls.prototype.constructor = THREE.EditorControls;
 
 /***/ }),
-/* 248 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39932,7 +40199,7 @@ function getMousePosition(dom, x, y) {
 }
 
 /***/ }),
-/* 249 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39990,7 +40257,7 @@ AssetsLoader.prototype = {
 module.exports = AssetsLoader;
 
 /***/ }),
-/* 250 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40008,7 +40275,7 @@ function shouldCaptureKeyEvent(event) {
   if (event.metaKey) {
     return false;
   }
-  return event.target.closest('#cameraToolbar') || event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA';
+  return event.target.closest("#cameraToolbar") || event.target.tagName !== "INPUT" && event.target.tagName !== "TEXTAREA";
 }
 
 var Shortcuts = {
@@ -40026,7 +40293,7 @@ var Shortcuts = {
 
     // h: help
     if (keyCode === 72) {
-      Events.emit('openhelpmodal');
+      Events.emit("openhelpmodal");
     }
 
     // esc: close inspector
@@ -40038,37 +40305,37 @@ var Shortcuts = {
 
     // w: translate
     if (keyCode === 87) {
-      Events.emit('transformmodechange', 'translate');
+      Events.emit("transformmodechange", "translate");
     }
 
     // e: rotate
     if (keyCode === 69) {
-      Events.emit('transformmodechange', 'rotate');
+      Events.emit("transformmodechange", "rotate");
     }
 
     // r: scale
     if (keyCode === 82) {
-      Events.emit('transformmodechange', 'scale');
+      Events.emit("transformmodechange", "scale");
     }
 
     // o: transform space
     if (keyCode === 79) {
-      Events.emit('transformspacechange');
+      Events.emit("transformspacechange");
     }
 
     // g: toggle grid
     if (keyCode === 71) {
-      Events.emit('togglegrid');
+      Events.emit("togglegrid");
     }
 
     // m: motion capture
     if (keyCode === 77) {
-      Events.emit('togglemotioncapture');
+      Events.emit("togglemotioncapture");
     }
 
     // n: new entity
     if (keyCode === 78) {
-      Events.emit('entitycreate', { element: 'a-entity', components: {} });
+      Events.emit("entitycreate", { element: "a-entity", components: {} });
     }
 
     // backspace & supr: remove selected entity
@@ -40085,24 +40352,24 @@ var Shortcuts = {
     if (keyCode === 70) {
       var selectedEntity = AFRAME.INSPECTOR.selectedEntity;
       if (selectedEntity !== undefined && selectedEntity !== null) {
-        Events.emit('objectfocus', selectedEntity.object3D);
+        Events.emit("objectfocus", selectedEntity.object3D);
       }
     }
 
     if (keyCode === 49) {
-      Events.emit('cameraperspectivetoggle');
+      Events.emit("cameraperspectivetoggle");
     } else if (keyCode === 50) {
-      Events.emit('cameraorthographictoggle', 'left');
+      Events.emit("cameraorthographictoggle", "left");
     } else if (keyCode === 51) {
-      Events.emit('cameraorthographictoggle', 'right');
+      Events.emit("cameraorthographictoggle", "right");
     } else if (keyCode === 52) {
-      Events.emit('cameraorthographictoggle', 'top');
+      Events.emit("cameraorthographictoggle", "top");
     } else if (keyCode === 53) {
-      Events.emit('cameraorthographictoggle', 'bottom');
+      Events.emit("cameraorthographictoggle", "bottom");
     } else if (keyCode === 54) {
-      Events.emit('cameraorthographictoggle', 'back');
+      Events.emit("cameraorthographictoggle", "back");
     } else if (keyCode === 55) {
-      Events.emit('cameraorthographictoggle', 'front');
+      Events.emit("cameraorthographictoggle", "front");
     }
 
     for (var moduleName in this.shortcuts.modules) {
@@ -40117,8 +40384,8 @@ var Shortcuts = {
       return;
     }
 
-    if (event.ctrlKey && _utils.os === 'windows' || event.metaKey && _utils.os === 'macos') {
-      if (AFRAME.INSPECTOR.selectedEntity && document.activeElement.tagName !== 'INPUT') {
+    if (event.ctrlKey && _utils.os === "windows" || event.metaKey && _utils.os === "macos") {
+      if (AFRAME.INSPECTOR.selectedEntity && document.activeElement.tagName !== "INPUT") {
         // x: cut selected entity
         if (event.keyCode === 88) {
           AFRAME.INSPECTOR.entityToCopy = AFRAME.INSPECTOR.selectedEntity;
@@ -40140,13 +40407,13 @@ var Shortcuts = {
       if (event.keyCode === 83) {
         event.preventDefault();
         event.stopPropagation();
-        document.getElementById('filter').focus();
+        document.getElementById("filter").focus();
       }
     }
 
     // º: toggle sidebars visibility
     if (event.keyCode === 48) {
-      Events.emit('togglesidebar', { which: 'all' });
+      Events.emit("togglesidebar", { which: "all" });
       event.preventDefault();
       event.stopPropagation();
     }
@@ -40156,18 +40423,18 @@ var Shortcuts = {
       this.disable();
     }
 
-    window.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    window.addEventListener('keyup', this.onKeyUp.bind(this), false);
+    window.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    window.addEventListener("keyup", this.onKeyUp.bind(this), false);
     this.enabled = true;
   },
   disable: function disable() {
-    window.removeEventListener('keydown', this.onKeyDown);
-    window.removeEventListener('keyup', this.onKeyUp);
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("keyup", this.onKeyUp);
     this.enabled = false;
   },
   checkModuleShortcutCollision: function checkModuleShortcutCollision(keyCode, moduleName, mustBeActive) {
     if (this.shortcuts.modules[moduleName] && this.shortcuts.modules[moduleName][keyCode]) {
-      console.warn('Keycode <%s> already registered as shorcut within the same module', keyCode);
+      console.warn("Keycode <%s> already registered as shorcut within the same module", keyCode);
     }
   },
   registerModuleShortcut: function registerModuleShortcut(keyCode, callback, moduleName, mustBeActive) {
@@ -40198,16 +40465,16 @@ var Shortcuts = {
 module.exports = Shortcuts;
 
 /***/ }),
-/* 251 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(252);
+var content = __webpack_require__(256);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(254)(content, {});
+var update = __webpack_require__(258)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -40224,21 +40491,21 @@ if(false) {
 }
 
 /***/ }),
-/* 252 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(253)();
+exports = module.exports = __webpack_require__(257)();
 // imports
 
 
 // module
-exports.push([module.i, "body.aframe-inspector-opened,\n.toggle-edit {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n.wf-roboto-n4-active body.aframe-inspector-opened,\n.wf-roboto-n4-active .toggle-edit {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\nbody.aframe-inspector-opened {\n  background: #1d1d1d;\n  color: #fff;\n  font-size: 12px;\n  margin: 0;\n  overflow: hidden;\n}\n#aframeInspector #toolbar {\n  background-color: #242424;\n}\n#aframeInspector #toolbar .toolbarActions {\n  padding: 0 0 5px;\n}\n#aframeInspector #toolbar .toolbarActions a.disabled {\n  color: #666;\n  cursor: default;\n}\n#aframeInspector #scenegraph {\n  background: #242424;\n  border-top: 1px solid #111;\n  display: flex;\n  flex-direction: column;\n  overflow: auto;\n  padding-top: 32px;\n  width: 230px;\n}\n#aframeInspector #scenegraph .entity {\n  background: #242424;\n  cursor: pointer;\n  display: flex;\n  justify-content: space-between;\n  padding: 3px;\n  width: 100%;\n  white-space: nowrap;\n}\n#aframeInspector #scenegraph .entity:hover {\n  background: #1d2f39;\n}\n#aframeInspector #scenegraph .entity.active {\n  background-color: #155373;\n  color: #fff;\n}\n#aframeInspector #scenegraph .entity.active .component:hover {\n  color: #1888c1;\n}\n#aframeInspector #scenegraph .entity.active .entityActions {\n  display: inline;\n}\n#aframeInspector #scenegraph .entity.novisible.active span,\n#aframeInspector #scenegraph .entity.novisible.active .fa,\n#aframeInspector #scenegraph .entity.novisible.active .collapsespace,\n#aframeInspector #scenegraph .entity.novisible.active .id {\n  color: #999;\n}\n#aframeInspector #scenegraph .entity.novisible:not(.active) span,\n#aframeInspector #scenegraph .entity.novisible:not(.active) .fa,\n#aframeInspector #scenegraph .entity.novisible:not(.active) .collapsespace,\n#aframeInspector #scenegraph .entity.novisible:not(.active) .id {\n  color: #626262;\n}\n#aframeInspector #scenegraph .component:hover {\n  color: #1faaf2;\n}\n#aframeInspector #scenegraph .entityIcons {\n  margin-left: 2px;\n}\n#aframeInspector #scenegraph .entityActions {\n  display: none;\n  margin: 0 14px;\n}\n#aframeInspector #scenegraph .entityActions .button {\n  color: #fff;\n  font-size: 12px;\n  margin-left: 6px;\n}\n#aframeInspector #scenegraph .fa {\n  color: #ccc;\n}\n#aframeInspector #scenegraph .entityActions .fa:hover {\n  color: #1faaf2;\n}\n#aframeInspector #scenegraph .active .fa {\n  color: #fafafa;\n}\n#aframeInspector #scenegraph .id {\n  color: #ccc;\n}\n#aframeInspector #scenegraph .option.active .id {\n  color: #fff;\n}\n#aframeInspector #scenegraph .collapsespace {\n  color: #eee;\n  display: inline-block;\n  text-align: center;\n  width: 14px;\n}\n#aframeInspector #scenegraph .fa-eye {\n  color: #bbb;\n}\n#aframeInspector #scenegraph .icons a.button {\n  color: #fff;\n}\n#aframeInspector #scenegraph .search {\n  padding: 5px;\n  font-size: 16px;\n  position: relative;\n}\n#aframeInspector #scenegraph .search input {\n  color: #c3c3c3;\n  background: #1d1d1d;\n  border-radius: 5px;\n  height: 22px;\n  text-indent: 10px;\n  width: 216px;\n}\n#aframeInspector #scenegraph .search .fa-search {\n  position: absolute;\n  right: 14px;\n  top: 8px;\n}\n#aframeInspector #scenegraph .search .fa-times {\n  position: absolute;\n  right: 15px;\n  top: 9px;\n}\n#aframeInspector #scenegraph .outliner {\n  background: #242424;\n  color: #c3c3c3;\n  cursor: default;\n  flex: 1 1 auto;\n  font-size: 13px;\n  height: calc(100% - 98px);\n  line-height: normal;\n  outline: none;\n  overflow-y: auto;\n  padding: 0;\n  width: 230px;\n}\n#aframeInspector .scenegraph-bottom {\n  background-color: #323232;\n  border-top: 1px solid #111;\n  bottom: 10;\n  height: 40px;\n  left: 0;\n  z-index: 100;\n}\n#aframeInspector .scenegraph-bottom a {\n  float: right;\n  margin: 10px;\n}\n#aframeInspector .components {\n  background-color: #242424;\n  color: #c3c3c3;\n  height: 100%;\n  overflow: auto;\n  position: fixed;\n  width: 331px;\n}\n#aframeInspector div.vec2,\n#aframeInspector div.vec3,\n#aframeInspector div.vec4 {\n  display: inline;\n}\n#aframeInspector .vec2 input.number,\n#aframeInspector .vec3 input.number {\n  width: 40px;\n}\n#aframeInspector .vec4 input.number {\n  width: 34px;\n}\n#aframeInspector .collapsible-header {\n  align-items: center;\n  display: flex;\n  justify-content: space-between;\n}\n#aframeInspector .collapsible-header .entityPrint {\n  color: #fff;\n}\n#aframeInspector .collapsible-content {\n  padding: 5px 0;\n}\n#aframeInspector .componentTitle span {\n  max-width: 200px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-transform: uppercase;\n  white-space: nowrap;\n  color: #fff;\n  font-weight: 600;\n  vertical-align: bottom !important;\n}\n#aframeInspector .collapsible .static {\n  background: #333;\n  border-bottom: 2px solid #242424;\n  box-sizing: content-box;\n  cursor: pointer;\n  height: 16px;\n  padding: 8px 10px 12px 10px;\n  vertical-align: bottom;\n  font-size: 13px;\n}\n#aframeInspector .collapsible .static:hover {\n  background: #393939;\n}\n#aframeInspector .collapsible .menu {\n  text-align: right;\n}\n#aframeInspector .collapsible .menuafter {\n  color: #bbb;\n  content: '\\2807';\n  font-size: 12px;\n  padding: 5px;\n  text-align: right;\n}\n#aframeInspector .collapsible .static {\n  margin: 0;\n}\n#aframeInspector .collapsible .static .collapse-button {\n  border: 6px solid transparent;\n  float: left;\n  height: 0;\n  margin-right: 10px;\n  margin-left: 2px;\n  width: 0;\n}\n#aframeInspector .collapsible.collapsed .static .collapse-button {\n  border-left-color: #c3c3c3;\n  margin-top: 4px;\n}\n#aframeInspector .collapsible:not(.collapsed) .static .collapse-button {\n  border-top-color: #c3c3c3;\n  margin-top: 7px;\n}\n#aframeInspector .propertyRow {\n  align-items: center;\n  display: flex;\n  font-size: 13px;\n  min-height: 30px;\n  padding: 2px 15px;\n}\n#aframeInspector .propertyRow .text {\n  cursor: default;\n  display: inline-block;\n  overflow: hidden;\n  padding-right: 10px;\n  text-overflow: ellipsis;\n  vertical-align: middle;\n  width: 118px;\n}\n#aframeInspector .propertyRow .map_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n}\n#aframeInspector .propertyRow .Select-control {\n  font-size: 11px;\n  height: 24px;\n}\n#aframeInspector .propertyRow .Select-placeholder,\n#aframeInspector .propertyRow .Select--single > .Select-control .Select-value {\n  line-height: 19px;\n}\n#aframeInspector .propertyRow .Select-input {\n  height: 22px;\n}\n#aframeInspector .propertyRow input[type=text],\n#aframeInspector .propertyRow input[type=number],\n#aframeInspector .propertyRow input.string,\n#aframeInspector .propertyRow input.number {\n  background: #1d1d1d;\n  color: #1faaf2;\n  min-height: 26px;\n  padding-bottom: 1px;\n  padding-left: 5px;\n  padding-right: 5px;\n  padding-top: 1px;\n}\n#aframeInspector .propertyRow input[type=text]:last-child,\n#aframeInspector .propertyRow input[type=number]:last-child,\n#aframeInspector .propertyRow input.string:last-child,\n#aframeInspector .propertyRow input.number:last-child {\n  padding-right: 0;\n}\n#aframeInspector .propertyRow input.string {\n  padding-left: 8px;\n  box-sizing: border-box;\n  width: 165px;\n}\n#aframeInspector .propertyRow .color_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n  letter-spacing: 1px;\n}\n#aframeInspector .propertyRowDefined .text {\n  color: #fafafa;\n  font-weight: 500;\n}\n#aframeInspector .components * {\n  vertical-align: middle;\n}\n#aframeInspector span.subcomponent {\n  color: #999;\n  float: none !important;\n  margin-left: 10px;\n  vertical-align: top !important;\n}\n#aframeInspector a.help-link {\n  opacity: 0.4;\n}\n#aframeInspector a.help-linkhover {\n  opacity: 1;\n}\n#aframeInspector #addComponentContainer {\n  align-items: center;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  padding: 20px 10px;\n  background: #1d1d1d;\n}\n#aframeInspector #addComponentContainer #addComponent {\n  text-align: left;\n  width: 200px;\n}\n#aframeInspector #addComponentContainer #addComponent .select__control {\n  background: #161616;\n  height: 35px;\n  color: #1faaf2;\n}\n#aframeInspector #addComponentContainer #addComponent .option {\n  display: flex;\n  justify-content: space-between;\n}\n#aframeInspector #addComponentContainer #addComponent .option span {\n  color: #1faaf2;\n}\n#aframeInspector #addComponentContainer #addComponentHeader {\n  font-size: 15px;\n  margin: 5px 0 10px 0;\n}\n#aframeInspector .Select-menu-outer .is-focused span {\n  color: #fff;\n}\n#aframeInspector .component-title {\n  align-items: center;\n  display: flex;\n}\n#aframeInspector #componentEntityHeader .collapsible-header {\n  bottom: 4px;\n  position: relative;\n}\n#aframeInspector #componentEntityHeader .collapse-button {\n  display: none;\n}\n#aframeInspector #componentEntityHeader .static {\n  height: 13px;\n}\n#aframeInspector #componentEntityHeader .entityPrint {\n  font-size: 15px;\n  padding-left: 5px;\n}\n#aframeInspector #componentEntityHeader .entityName {\n  max-width: 160px;\n  top: 0;\n}\n#aframeInspector #componentEntityHeader .entityIcons {\n  color: #fafafa;\n}\n#aframeInspector #mixinSelect {\n  width: 160px;\n}\n#aframeInspector .propertyRow .texture {\n  display: flex;\n}\n#aframeInspector .propertyRow .texture input {\n  margin-left: 0;\n  width: 120px;\n}\n#aframeInspector #componentEntityHeader .gltfIcon img {\n  top: 0;\n}\n#aframeInspector .fa {\n  color: #c3c3c3;\n}\n#aframeInspector .fa:hover {\n  color: #1faaf2;\n}\n#aframeInspector .entityPrint {\n  font-family: system-ui, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n#aframeInspector .entityName {\n  display: inline-block;\n  overflow: hidden;\n  position: relative;\n  text-overflow: ellipsis;\n  top: 3px;\n  white-space: nowrap;\n}\n#aframeInspector [data-entity-name-type=\"id\"] {\n  color: #92374d;\n}\n#aframeInspector [data-entity-name-type=\"class\"] {\n  color: #514b23;\n}\n#aframeInspector [data-entity-name-type=\"mixin\"] {\n  color: #d66853;\n}\n#aframeInspector .help-lists {\n  display: flex;\n  justify-content: space-around;\n}\n#aframeInspector .help-list {\n  list-style: none;\n  margin: 0;\n  padding: 0 0 10px;\n  width: 350px;\n}\n#aframeInspector .help-list li {\n  margin-right: 40px;\n}\n#aframeInspector .help-key-unit {\n  line-height: 1.8;\n  margin-right: 2em;\n  padding: 5px 0;\n}\n#aframeInspector .help-key {\n  bottom: 2px;\n  margin-right: 4px;\n  min-width: 60px;\n  position: relative;\n}\n#aframeInspector .help-key span {\n  background-color: #2e2e2e;\n  background-repeat: repeat-x;\n  border: 1px solid #666;\n  border-radius: 3px;\n  box-shadow: 0 0 5px #000;\n  color: #999;\n  display: inline-block;\n  font-size: 12px;\n  padding: 0 8px;\n  text-align: center;\n}\n#aframeInspector .help-key-def {\n  color: #bbb;\n  display: inline-block;\n  margin-left: 1em;\n}\n#aframeInspector .select__control {\n  border: 0;\n  border-radius: 0;\n  cursor: pointer;\n  min-height: 26px;\n  font-family: system-ui, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n  font-size: 13px;\n}\n#aframeInspector .select__indicator {\n  height: 26px;\n}\n#aframeInspector .select__indicator-separator {\n  display: none;\n}\n#aframeInspector .select__control,\n#aframeInspector .select__menu {\n  background: #1d1d1d;\n}\n#aframeInspector .select__option {\n  padding: 5px 10px;\n}\n#aframeInspector .select__placeholder,\n#aframeInspector .select__menu {\n  color: #c3c3c3;\n}\n#aframeInspector .select__single-value {\n  color: #1faaf2;\n}\n#aframeInspector .select__control--is-focused {\n  box-shadow: none !important;\n}\n#aframeInspector .select__option {\n  cursor: pointer;\n}\n#aframeInspector .select__clear-indicator {\n  display: none;\n}\n#aframeInspector .select__label {\n  font-size: 11px;\n}\n#aframeInspector .select__option--is-focused {\n  background: #155373;\n}\n#aframeInspector .select__value-container {\n  height: 26px;\n  position: static;\n}\n#aframeInspector .select__value-container.select__value-container--is-multi {\n  height: auto;\n  padding: 6px;\n}\n#aframeInspector .select__dropdown-indicator {\n  padding: 3px 8px;\n}\n#aframeInspector .select__multi-value {\n  background: #242424;\n  color: #1faaf2;\n}\n#aframeInspector .select__multi-value__label {\n  color: #1faaf2;\n}\n#aframeInspector .select__value-container--is-multi > :last-child {\n  display: none;\n}\n#aframeInspector .select__multi-value__remove:hover {\n  color: #fff;\n  background: #242424;\n}\n#aframeInspector .modal {\n  animation: animateopacity 0.2s ease-out;\n  background-color: #000;\n  background-color: rgba(0,0,0,0.6);\n  display: flex;\n  height: 100%;\n  left: 0;\n  overflow: auto;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index: 9999999999;\n}\n#aframeInspector .modal h3 {\n  font-size: 18px;\n  font-weight: 100;\n  margin: 0.6em 0;\n}\n#aframeInspector #textureModal .modal-content {\n  height: calc(100% - 50px);\n  width: calc(100% - 50px);\n}\n#aframeInspector .modal-content {\n  animation: animatetop 0.2s ease-out;\n  animation-duration: 0.2s;\n  animation-name: animatetop;\n  background-color: #232323;\n  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5), 0 6px 20px 0 rgba(0,0,0,0.5);\n  margin: auto;\n  overflow: hidden;\n  padding: 0;\n}\n#aframeInspector .close {\n  color: #fff;\n  float: right;\n  font-size: 28px;\n  font-weight: bold;\n}\n#aframeInspector .closehover,\n#aframeInspector .closefocus {\n  color: #08f;\n  cursor: pointer;\n  text-decoration: none;\n}\n#aframeInspector .modal-header {\n  color: #fff;\n  padding: 2px 16px;\n}\n#aframeInspector .modal-body {\n  overflow: auto;\n  padding: 16px;\n}\n#aframeInspector .modal-footer {\n  color: #fff;\n  padding: 2px 16px;\n}\n#aframeInspector .gallery {\n  background: #232323;\n  display: flex;\n  flex-wrap: wrap;\n  margin: 15px auto 0;\n  overflow: auto;\n  padding: 15px 3px 3px;\n}\n#aframeInspector .newimage .gallery {\n  padding: 16px;\n}\n#aframeInspector .gallery li {\n  border-radius: 2px;\n  box-shadow: 0 0 6px rgba(0,0,0,0.6);\n  cursor: pointer;\n  margin: 8px;\n  overflow: hidden;\n  width: 155px;\n}\n#aframeInspector .gallery li.selected,\n#aframeInspector .gallery li:hover {\n  box-shadow: 0 0 0 2px #1eaaf1;\n}\n#aframeInspector .gallery li .detail {\n  background-color: #323232;\n  margin: 0;\n  min-height: 60px;\n  padding: 3px 10px;\n}\n#aframeInspector .gallery li .button.fa-external-link {\n  margin-left: 136px;\n  margin-top: 5px;\n  position: fixed;\n}\n#aframeInspector .preview {\n  padding: 10px;\n  width: 150px;\n}\n#aframeInspector .preview input {\n  display: block;\n  margin: 8px 0;\n  width: 144px;\n}\n#aframeInspector .preview button {\n  width: 155px;\n}\n#aframeInspector .preview .detail .title {\n  color: #fff;\n  display: inline-block;\n  max-width: 155px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n#aframeInspector .gallery li.selected .detail,\n#aframeInspector .gallery li:hover .detail {\n  background-color: #444;\n}\n#aframeInspector .gallery li .detail span {\n  color: #777;\n  display: block;\n  margin-top: 4px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  width: 140px;\n}\n#aframeInspector .gallery li.selected .detail span,\n#aframeInspector .gallery li:hover .detail span {\n  color: #888;\n}\n#aframeInspector .gallery li .detail span.title {\n  color: #fff !important;\n}\n#aframeInspector .modal button {\n  appearance: none;\n  border-radius: 0;\n  box-shadow: none;\n  cursor: pointer;\n  display: inline-block;\n  font-size: 12px;\n  line-height: 1.8;\n  margin: 0 10px 0 0;\n  padding: 5px 10px;\n}\n#aframeInspector .modal buttonfocus {\n  outline: none;\n}\n#aframeInspector .modal button {\n  background-color: #1eaaf1;\n  border: none;\n  color: #fff;\n}\n#aframeInspector .modal buttonhover,\n#aframeInspector .modal button.hover {\n  background-color: #346392;\n  text-shadow: -1px 1px #27496d;\n}\n#aframeInspector .modal buttonactive,\n#aframeInspector .modal button.active {\n  background-color: #27496d;\n  text-shadow: -1px 1px #193047;\n}\n#aframeInspector .modal buttondisabled {\n  background-color: #888;\n  cursor: none;\n}\n#aframeInspector .newimage {\n  background-color: #323232;\n  color: #bcbcbc;\n  display: flex;\n  font-size: 13px;\n  justify-content: space-between;\n  margin-top: 10px;\n  overflow: auto;\n  padding: 10px;\n}\n#aframeInspector .newimage input {\n  color: #1eaaf1;\n  padding: 3px 5px;\n}\n#aframeInspector .texture canvas + input {\n  margin-left: 5px;\n}\n#aframeInspector .texture .fa {\n  padding-right: 5px;\n}\n#aframeInspector .texture .fa-external-link {\n  font-size: 14px;\n  padding-top: 2px;\n}\n#aframeInspector .uploader-normal-button .hidden {\n  display: none;\n}\n#aframeInspector .gallery a.fa.texture-link {\n  box-shadow: 0 0 14px -1px rgba(0,0,0,0.75);\n  position: fixed;\n}\n#aframeInspector .assets.search {\n  margin-top: 10px;\n  width: 200px;\n}\n#aframeInspector .assets.search .fa-search {\n  top: 7px;\n}\n#aframeInspector .new_asset_options {\n  margin: 10px;\n}\n#aframeInspector .new_asset_options > ul {\n  margin-left: 10px;\n  padding: 5px;\n}\n#aframeInspector .new_asset_options > ul > li {\n  padding: 10px 0;\n}\n#aframeInspector .new_asset_options .imageUrl {\n  margin-left: 5px;\n  width: 350px;\n}\n#aframeInspector .texture canvas {\n  border: 1px solid #333;\n  cursor: pointer;\n}\n#aframeInspector #viewportBar {\n  align-items: center;\n  background-color: #242424;\n  color: #c3c3c3;\n  display: flex;\n  flex-grow: 2;\n  height: 32px;\n  font-size: 14px;\n  justify-content: space-between;\n  left: 0;\n  margin: 0 auto;\n  right: 0;\n  top: 0;\n}\n#aframeInspector .toolbarButtons {\n  position: relative;\n}\n#aframeInspector .toolbarButtons * {\n  margin-left: 0;\n  padding: 8px;\n  vertical-align: middle;\n}\n#aframeInspector .toolbarButtons a.button {\n  margin: 0 6px 0 0;\n}\n#aframeInspector .toolbarButtons a.button:not(.active):hover {\n  background-color: #444;\n}\n#aframeInspector .toolbarButtons .active {\n  background-color: #1faaf2;\n  color: #fff;\n}\n#aframeInspector .toolbarButtons .active:hover {\n  color: #fff !important;\n}\n#aframeInspector .local-transform {\n  padding-left: 10px;\n}\n#aframeInspector .local-transform label {\n  color: #aaa;\n  padding-left: 5px;\n}\n#aframeInspector .local-transform a.button {\n  padding-top: 0;\n}\n#aframeInspector #cameraSelect {\n  cursor: pointer;\n  width: 110px;\n}\n#aframeInspector #cameraSelect .select__dropdown-indicator {\n  padding-left: 3px;\n  padding-right: 3px;\n}\n#aframeInspector #cameraToolbar {\n  margin-left: 5px;\n  align-items: center;\n  display: flex;\n}\n#aframeInspector #cameraToolbar a {\n  margin-right: 10px;\n}\n#aframeInspector #cameraToolbar .select__control {\n  background: none;\n}\n#aframeInspector #cameraToolbar .select__single-value {\n  color: #c3c3c3;\n}\n#aframeInspector #cameraToolbar .select__single-value:hover {\n  color: #1faaf2;\n}\n#aframeInspector #viewportHud {\n  display: none;\n}\n@media (min-width: 1024px) {\n  #aframeInspector #viewportHud {\n    display: block;\n  }\n}\n#aframeInspector .Select-control {\n  background-color: #222 !important;\n  border: none;\n  border-radius: 0;\n  color: #1faaf2;\n  font-family: $monosapce;\n}\n#aframeInspector .Select-menu-outer {\n  border: none;\n}\n#aframeInspector .Select-menu-outer .is-focused {\n  background-color: #1faaf2 !important;\n  color: #c3c3c3;\n}\n#aframeInspector .Select-option {\n  background-color: #222 !important;\n}\n#aframeInspector .select-widget {\n  display: inline-block;\n  width: 157px;\n}\n#aframeInspector .Select-placeholder,\n#aframeInspector .Select--single > .Select-control .Select-value {\n  color: #1faaf2 !important;\n}\n#aframeInspector .Select-value-label {\n  color: #1faaf2 !important;\n}\n#aframeInspector .dropbtn {\n  border: none;\n  color: #c3c3c3;\n  cursor: pointer;\n}\n#aframeInspector .dropdown {\n  display: inline-block;\n  position: relative;\n}\n#aframeInspector .dropdown-content {\n  background-color: #f9f9f9;\n  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);\n  display: none;\n  left: 8px;\n  min-width: 38px;\n  position: absolute;\n  z-index: 999;\n}\n#aframeInspector .dropdown-content a {\n  background-color: #232323;\n  color: #7d7d7d;\n  display: block;\n  padding: 10px 14px;\n  text-decoration: none;\n}\n#aframeInspector .dropdown-content a:hover {\n  background-color: #4ecbff;\n  color: #c3c3c3;\n}\n#aframeInspector .dropdownhover .dropdown-content {\n  display: block;\n}\n#aframeInspector .dropdownhover .dropbtn {\n  color: #1faaf2;\n}\n#aframeInspector .Select,\n#aframeInspector code,\n#aframeInspector pre,\n#aframeInspector input,\n#aframeInspector textarea,\n#aframeInspector select {\n  font-family: system-ui, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n  font-size: 13px;\n}\n#aframeInspector .wf-robotomono-n4-active .Select,\n#aframeInspector .wf-robotomono-n4-active code,\n#aframeInspector .wf-robotomono-n4-active pre,\n#aframeInspector .wf-robotomono-n4-active input,\n#aframeInspector .wf-robotomono-n4-active textarea,\n#aframeInspector .wf-robotomono-n4-active select {\n  font-family: Roboto Mono, Consolas, Andale Mono, Monaco, Courier New, monospace;\n}\n#aframeInspector hr {\n  border: 0;\n  border-top: 1px solid #ccc;\n}\n#aframeInspector a {\n  cursor: pointer;\n}\n#aframeInspector button {\n  position: relative;\n}\n#aframeInspector code {\n  font-family: Consolas, Andale Mono, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;\n}\n#aframeInspector textarea {\n  tab-size: 4;\n  white-space: pre;\n  word-wrap: normal;\n}\n#aframeInspector textarea.success {\n  border-color: #8b8 !important;\n}\n#aframeInspector textarea.fail {\n  background-color: rgba(255,0,0,0.05);\n  border-color: #f00 !important;\n}\n#aframeInspector textarea,\n#aframeInspector input {\n  outline: none /* osx */;\n}\n#aframeInspector .gltfIcon img {\n  box-sizing: content-box;\n  display: inline;\n  height: 20px;\n  left: 5px;\n  padding: 0 5px;\n  position: relative;\n  top: 4px;\n  vertical-align: baseline;\n  width: 20px;\n}\n#aframeInspector #scenegraph,\n#aframeInspector #rightPanel {\n  z-index: 9998;\n}\n#aframeInspector #sidebar,\n#aframeInspector #scenegraph,\n#aframeInspector .panel {\n  cursor: default;\n  user-select: none;\n}\n#aframeInspector .toggle-edit {\n  background-color: #92374d;\n  box-sizing: content-box;\n  color: #fafafa;\n  font-size: 13px;\n  left: 3px;\n  line-height: normal;\n  margin: 0;\n  padding: 6px 10px;\n  position: fixed;\n  text-align: center;\n  text-decoration: none;\n  top: 3px;\n  width: 204px;\n  z-index: 999999999;\n}\n#aframeInspector .toggle-edithover {\n  background-color: #e42b5a;\n}\n#aframeInspector input {\n  background-color: transparent;\n  border: 1px solid #555;\n  color: #fff;\n}\n#aframeInspector input,\n#aframeInspector .texture canvas {\n  transition: 0.1s background-color ease-in-out, 0.1s border-color ease-in-out, 0.1s color ease-in-out;\n}\n#aframeInspector input[type=text],\n#aframeInspector input[type=number],\n#aframeInspector input.string,\n#aframeInspector input.number {\n  min-height: 14px;\n  outline: none;\n}\n#aframeInspector input[type=\"checkbox\"] {\n  cursor: pointer;\n  margin: 0;\n  height: 18px;\n  width: 18px;\n}\n#aframeInspector input.number {\n  background-color: transparent !important;\n  border: 0;\n  color: #2cb7ff !important;\n  cursor: col-resize;\n  font-size: 13px;\n  padding: 2px;\n}\n#aframeInspector input.stringfocus,\n#aframeInspector input.numberfocus {\n  border: 1px solid #20b1fb;\n  color: #fff;\n  cursor: auto;\n}\n#aframeInspector input.error {\n  border: 1px solid #a00;\n}\n#aframeInspector #sidebar {\n  background: #242424;\n  width: 331px;\n}\n#aframeInspector #sidebar * {\n  vertical-align: middle;\n}\n#aframeInspector input,\n#aframeInspector textarea,\n#aframeInspector select {\n  background: #222;\n  border: 1px solid transparent;\n  color: #888;\n}\n#aframeInspector select {\n  background: #393939;\n}\n#aframeInspector input[type=color] {\n  background-color: #333;\n  border: 1px solid #111;\n  height: 28px;\n  cursor: pointer;\n}\n#aframeInspector input[type=color] {\n  cursor: pointer;\n  height: 25px;\n  padding: 0;\n  width: 50px;\n}\n#aframeInspector input[type=color]-webkit-color-swatch {\n  border: 0 /* To remove the gray border. */;\n}\n#aframeInspector input[type=color]-webkit-color-swatch-wrapper {\n  padding: 0 /* To remove the inner padding. */;\n}\n#aframeInspector input[type=color]-moz-color-swatch {\n  border: 0;\n}\n#aframeInspector input[type=color]-moz-focus-inner {\n  border: 0 /* To remove the inner border (specific to Firefox). */;\n  padding: 0;\n}\n#aframeInspector .hidden {\n  visibility: hidden;\n}\n#aframeInspector a.button {\n  color: #bcbcbc;\n  font-size: 16px;\n  margin-left: 10px;\n  text-decoration: none;\n}\n#aframeInspector a.buttonhover {\n  color: #1faaf2;\n}\n#aframeInspector .hide {\n  display: none;\n}\n#aframeInspector .a-canvas.state-dragging {\n  cursor: grabbing;\n}\n#aframeInspector #rightPanel {\n  align-items: stretch;\n  display: flex;\n  justify-content: flex-end;\n}\n#aframeInspector #inspectorContainer {\n  display: flex;\n  justify-content: space-between;\n  left: 0;\n  height: 100%;\n  pointer-events: none;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index: 999999;\n}\n#aframeInspector #scenegraph,\n#aframeInspector #viewportBar,\n#aframeInspector #rightPanel {\n  pointer-events: all;\n}\n#aframeInspector .aframe-inspector-opened a-scene .a-canvas {\n  background-color: #191919;\n  z-index: 9998;\n}\n#aframeInspector .toggle-sidebar {\n  align-items: center;\n  display: flex;\n  height: 100%;\n  position: absolute;\n  z-index: 9998;\n}\n#aframeInspector .toggle-sidebar .left {\n  left: 0;\n}\n#aframeInspector .toggle-sidebar .right {\n  right: 0;\n}\n#aframeInspector .toggle-sidebar a {\n  background-color: #262626;\n  color: #bcbcbc;\n  padding: 5px;\n  z-index: 9998;\n}\n#aframeInspector .toggle-sidebar a.hover {\n  background-color: #1faaf2;\n  color: #fff;\n}\n@-moz-keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
+exports.push([module.i, "body.aframe-inspector-opened,\n.toggle-edit {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n.wf-roboto-n4-active body.aframe-inspector-opened,\n.wf-roboto-n4-active .toggle-edit {\n  font-family: BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\nbody.aframe-inspector-opened {\n  background: #1d1d1d;\n  color: #fff;\n  font-size: 12px;\n  margin: 0;\n  overflow: hidden;\n}\n#aframeInspector #toolbar {\n  background-color: #242424;\n}\n#aframeInspector #toolbar .toolbarActions {\n  padding: 0 0 5px;\n}\n#aframeInspector #toolbar .toolbarActions a.disabled {\n  color: #666;\n  cursor: default;\n}\n#aframeInspector #scenegraph {\n  background: #242424;\n  border-top: 1px solid #111;\n  display: flex;\n  flex-direction: column;\n  overflow: auto;\n  padding-top: 32px;\n  width: 230px;\n}\n#aframeInspector #scenegraph .entity {\n  background: #242424;\n  cursor: pointer;\n  display: flex;\n  justify-content: space-between;\n  padding: 3px;\n  width: 100%;\n  white-space: nowrap;\n}\n#aframeInspector #scenegraph .entity:hover {\n  background: #1d2f39;\n}\n#aframeInspector #scenegraph .entity.active {\n  background-color: #155373;\n  color: #fff;\n}\n#aframeInspector #scenegraph .entity.active .component:hover {\n  color: #1888c1;\n}\n#aframeInspector #scenegraph .entity.active .entityActions {\n  display: inline;\n}\n#aframeInspector #scenegraph .entity.novisible.active span,\n#aframeInspector #scenegraph .entity.novisible.active .fa,\n#aframeInspector #scenegraph .entity.novisible.active .collapsespace,\n#aframeInspector #scenegraph .entity.novisible.active .id {\n  color: #999;\n}\n#aframeInspector #scenegraph .entity.novisible:not(.active) span,\n#aframeInspector #scenegraph .entity.novisible:not(.active) .fa,\n#aframeInspector #scenegraph .entity.novisible:not(.active) .collapsespace,\n#aframeInspector #scenegraph .entity.novisible:not(.active) .id {\n  color: #626262;\n}\n#aframeInspector #scenegraph .component:hover {\n  color: #1faaf2;\n}\n#aframeInspector #scenegraph .entityIcons {\n  margin-left: 2px;\n}\n#aframeInspector #scenegraph .entityActions {\n  display: none;\n  margin: 0 14px;\n}\n#aframeInspector #scenegraph .entityActions .button {\n  color: #fff;\n  font-size: 12px;\n  margin-left: 6px;\n}\n#aframeInspector #scenegraph .fa {\n  color: #ccc;\n}\n#aframeInspector #scenegraph .entityActions .fa:hover {\n  color: #1faaf2;\n}\n#aframeInspector #scenegraph .active .fa {\n  color: #fafafa;\n}\n#aframeInspector #scenegraph .id {\n  color: #ccc;\n}\n#aframeInspector #scenegraph .option.active .id {\n  color: #fff;\n}\n#aframeInspector #scenegraph .collapsespace {\n  color: #eee;\n  display: inline-block;\n  text-align: center;\n  width: 14px;\n}\n#aframeInspector #scenegraph .fa-eye {\n  color: #bbb;\n}\n#aframeInspector #scenegraph .icons a.button {\n  color: #fff;\n}\n#aframeInspector #scenegraph .search {\n  padding: 5px;\n  font-size: 16px;\n  position: relative;\n}\n#aframeInspector #scenegraph .search input {\n  color: #c3c3c3;\n  background: #1d1d1d;\n  border-radius: 5px;\n  height: 22px;\n  text-indent: 10px;\n  width: 216px;\n}\n#aframeInspector #scenegraph .search .fa-search {\n  position: absolute;\n  right: 14px;\n  top: 8px;\n}\n#aframeInspector #scenegraph .search .fa-times {\n  position: absolute;\n  right: 15px;\n  top: 9px;\n}\n#aframeInspector #scenegraph .outliner {\n  background: #242424;\n  color: #c3c3c3;\n  cursor: default;\n  flex: 1 1 auto;\n  font-size: 13px;\n  height: calc(100% - 98px);\n  line-height: normal;\n  outline: none;\n  overflow-y: auto;\n  padding: 0;\n  width: 230px;\n}\n#aframeInspector .scenegraph-bottom {\n  background-color: #323232;\n  border-top: 1px solid #111;\n  bottom: 10;\n  height: 40px;\n  left: 0;\n  z-index: 100;\n}\n#aframeInspector .scenegraph-bottom a {\n  float: right;\n  margin: 10px;\n}\n#aframeInspector .components {\n  background-color: #242424;\n  color: #c3c3c3;\n  height: 100%;\n  overflow: auto;\n  position: fixed;\n  width: 331px;\n}\n#aframeInspector div.vec2,\n#aframeInspector div.vec3,\n#aframeInspector div.vec4 {\n  display: inline;\n}\n#aframeInspector .vec2 input.number,\n#aframeInspector .vec3 input.number {\n  width: 40px;\n}\n#aframeInspector .vec4 input.number {\n  width: 34px;\n}\n#aframeInspector .collapsible-header {\n  align-items: center;\n  display: flex;\n  justify-content: space-between;\n}\n#aframeInspector .collapsible-header .entityPrint {\n  color: #fff;\n}\n#aframeInspector .collapsible-content {\n  padding: 5px 0;\n}\n#aframeInspector .componentTitle span {\n  max-width: 200px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  text-transform: uppercase;\n  white-space: nowrap;\n  color: #fff;\n  font-weight: 600;\n  vertical-align: bottom !important;\n}\n#aframeInspector .collapsible .static {\n  background: #333;\n  border-bottom: 2px solid #242424;\n  box-sizing: content-box;\n  cursor: pointer;\n  height: 16px;\n  padding: 8px 10px 12px 10px;\n  vertical-align: bottom;\n  font-size: 13px;\n}\n#aframeInspector .collapsible .static:hover {\n  background: #393939;\n}\n#aframeInspector .collapsible .menu {\n  text-align: right;\n}\n#aframeInspector .collapsible .menuafter {\n  color: #bbb;\n  content: '\\2807';\n  font-size: 12px;\n  padding: 5px;\n  text-align: right;\n}\n#aframeInspector .collapsible .static {\n  margin: 0;\n}\n#aframeInspector .collapsible .static .collapse-button {\n  border: 6px solid transparent;\n  float: left;\n  height: 0;\n  margin-right: 10px;\n  margin-left: 2px;\n  width: 0;\n}\n#aframeInspector .collapsible.collapsed .static .collapse-button {\n  border-left-color: #c3c3c3;\n  margin-top: 4px;\n}\n#aframeInspector .collapsible:not(.collapsed) .static .collapse-button {\n  border-top-color: #c3c3c3;\n  margin-top: 7px;\n}\n#aframeInspector .propertyRow {\n  align-items: center;\n  display: flex;\n  font-size: 13px;\n  min-height: 30px;\n  padding: 2px 15px;\n}\n#aframeInspector .propertyRow .text {\n  cursor: default;\n  display: inline-block;\n  overflow: hidden;\n  padding-right: 10px;\n  text-overflow: ellipsis;\n  vertical-align: middle;\n  width: 118px;\n}\n#aframeInspector .propertyRow .map_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n}\n#aframeInspector .propertyRow .Select-control {\n  font-size: 11px;\n  height: 24px;\n}\n#aframeInspector .propertyRow .Select-placeholder,\n#aframeInspector .propertyRow .Select--single > .Select-control .Select-value {\n  line-height: 19px;\n}\n#aframeInspector .propertyRow .Select-input {\n  height: 22px;\n}\n#aframeInspector .propertyRow input[type=text],\n#aframeInspector .propertyRow input[type=number],\n#aframeInspector .propertyRow input.string,\n#aframeInspector .propertyRow input.number {\n  background: #1d1d1d;\n  color: #1faaf2;\n  min-height: 26px;\n  padding-bottom: 1px;\n  padding-left: 5px;\n  padding-right: 5px;\n  padding-top: 1px;\n}\n#aframeInspector .propertyRow input[type=text]:last-child,\n#aframeInspector .propertyRow input[type=number]:last-child,\n#aframeInspector .propertyRow input.string:last-child,\n#aframeInspector .propertyRow input.number:last-child {\n  padding-right: 0;\n}\n#aframeInspector .propertyRow input.string {\n  padding-left: 8px;\n  box-sizing: border-box;\n  width: 165px;\n}\n#aframeInspector .propertyRow .color_value {\n  margin: 0 0 0 5px;\n  width: 68px;\n  letter-spacing: 1px;\n}\n#aframeInspector .propertyRowDefined .text {\n  color: #fafafa;\n  font-weight: 500;\n}\n#aframeInspector .components * {\n  vertical-align: middle;\n}\n#aframeInspector span.subcomponent {\n  color: #999;\n  float: none !important;\n  margin-left: 10px;\n  vertical-align: top !important;\n}\n#aframeInspector a.help-link {\n  opacity: 0.4;\n}\n#aframeInspector a.help-linkhover {\n  opacity: 1;\n}\n#aframeInspector #addComponentContainer {\n  align-items: center;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  padding: 20px 10px;\n  background: #1d1d1d;\n}\n#aframeInspector #addComponentContainer #addComponent {\n  text-align: left;\n  width: 200px;\n}\n#aframeInspector #addComponentContainer #addComponent .select__control {\n  background: #161616;\n  height: 35px;\n  color: #1faaf2;\n}\n#aframeInspector #addComponentContainer #addComponent .option {\n  display: flex;\n  justify-content: space-between;\n}\n#aframeInspector #addComponentContainer #addComponent .option span {\n  color: #1faaf2;\n}\n#aframeInspector #addComponentContainer #addComponentHeader {\n  font-size: 15px;\n  margin: 5px 0 10px 0;\n}\n#aframeInspector .Select-menu-outer .is-focused span {\n  color: #fff;\n}\n#aframeInspector .component-title {\n  align-items: center;\n  display: flex;\n}\n#aframeInspector #componentEntityHeader .collapsible-header {\n  bottom: 4px;\n  position: relative;\n}\n#aframeInspector #componentEntityHeader .collapse-button {\n  display: none;\n}\n#aframeInspector #componentEntityHeader .static {\n  height: 13px;\n}\n#aframeInspector #componentEntityHeader .entityPrint {\n  font-size: 15px;\n  padding-left: 5px;\n}\n#aframeInspector #componentEntityHeader .entityName {\n  max-width: 160px;\n  top: 0;\n}\n#aframeInspector #componentEntityHeader .entityIcons {\n  color: #fafafa;\n}\n#aframeInspector #mixinSelect {\n  width: 160px;\n}\n#aframeInspector .propertyRow .texture {\n  display: flex;\n}\n#aframeInspector .propertyRow .texture input {\n  margin-left: 0;\n  width: 120px;\n}\n#aframeInspector #componentEntityHeader .gltfIcon img {\n  top: 0;\n}\n#aframeInspector .fa {\n  color: #c3c3c3;\n}\n#aframeInspector .fa:hover {\n  color: #1faaf2;\n}\n#aframeInspector .entityPrint {\n  font-family: system-ui, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n}\n#aframeInspector .entityName {\n  display: inline-block;\n  overflow: hidden;\n  position: relative;\n  text-overflow: ellipsis;\n  top: 3px;\n  white-space: nowrap;\n}\n#aframeInspector [data-entity-name-type=\"id\"] {\n  color: #92374d;\n}\n#aframeInspector [data-entity-name-type=\"class\"] {\n  color: #514b23;\n}\n#aframeInspector [data-entity-name-type=\"mixin\"] {\n  color: #d66853;\n}\n#aframeInspector .help-lists {\n  display: flex;\n  justify-content: space-around;\n}\n#aframeInspector .help-list {\n  list-style: none;\n  margin: 0;\n  padding: 0 0 10px;\n  width: 350px;\n}\n#aframeInspector .help-list li {\n  margin-right: 40px;\n}\n#aframeInspector .help-key-unit {\n  line-height: 1.8;\n  margin-right: 2em;\n  padding: 5px 0;\n}\n#aframeInspector .help-key {\n  bottom: 2px;\n  margin-right: 4px;\n  min-width: 60px;\n  position: relative;\n}\n#aframeInspector .help-key span {\n  background-color: #2e2e2e;\n  background-repeat: repeat-x;\n  border: 1px solid #666;\n  border-radius: 3px;\n  box-shadow: 0 0 5px #000;\n  color: #999;\n  display: inline-block;\n  font-size: 12px;\n  padding: 0 8px;\n  text-align: center;\n}\n#aframeInspector .help-key-def {\n  color: #bbb;\n  display: inline-block;\n  margin-left: 1em;\n}\n#aframeInspector .select__control {\n  border: 0;\n  border-radius: 0;\n  cursor: pointer;\n  min-height: 26px;\n  font-family: system-ui, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n  font-size: 13px;\n}\n#aframeInspector .select__indicator {\n  height: 26px;\n}\n#aframeInspector .select__indicator-separator {\n  display: none;\n}\n#aframeInspector .select__control,\n#aframeInspector .select__menu {\n  background: #1d1d1d;\n}\n#aframeInspector .select__option {\n  padding: 5px 10px;\n}\n#aframeInspector .select__placeholder,\n#aframeInspector .select__menu {\n  color: #c3c3c3;\n}\n#aframeInspector .select__single-value {\n  color: #1faaf2;\n}\n#aframeInspector .select__control--is-focused {\n  box-shadow: none !important;\n}\n#aframeInspector .select__option {\n  cursor: pointer;\n}\n#aframeInspector .select__clear-indicator {\n  display: none;\n}\n#aframeInspector .select__label {\n  font-size: 11px;\n}\n#aframeInspector .select__option--is-focused {\n  background: #155373;\n}\n#aframeInspector .select__value-container {\n  height: 26px;\n  position: static;\n}\n#aframeInspector .select__value-container.select__value-container--is-multi {\n  height: auto;\n  padding: 6px;\n}\n#aframeInspector .select__dropdown-indicator {\n  padding: 3px 8px;\n}\n#aframeInspector .select__multi-value {\n  background: #242424;\n  color: #1faaf2;\n}\n#aframeInspector .select__multi-value__label {\n  color: #1faaf2;\n}\n#aframeInspector .select__value-container--is-multi > :last-child {\n  display: none;\n}\n#aframeInspector .select__multi-value__remove:hover {\n  color: #fff;\n  background: #242424;\n}\n#aframeInspector .modal {\n  animation: animateopacity 0.2s ease-out;\n  background-color: #000;\n  background-color: rgba(0,0,0,0.6);\n  display: flex;\n  height: 100%;\n  left: 0;\n  overflow: auto;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index: 9999999999;\n}\n#aframeInspector .modal h3 {\n  font-size: 18px;\n  font-weight: 100;\n  margin: 0.6em 0;\n}\n#aframeInspector #textureModal .modal-content {\n  height: calc(100% - 50px);\n  width: calc(100% - 50px);\n}\n#aframeInspector .modal-content {\n  animation: animatetop 0.2s ease-out;\n  animation-duration: 0.2s;\n  animation-name: animatetop;\n  background-color: #232323;\n  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5), 0 6px 20px 0 rgba(0,0,0,0.5);\n  margin: auto;\n  overflow: hidden;\n  padding: 0;\n}\n#aframeInspector .close {\n  color: #fff;\n  float: right;\n  font-size: 28px;\n  font-weight: bold;\n}\n#aframeInspector .closehover,\n#aframeInspector .closefocus {\n  color: #08f;\n  cursor: pointer;\n  text-decoration: none;\n}\n#aframeInspector .modal-header {\n  color: #fff;\n  padding: 2px 16px;\n}\n#aframeInspector .modal-body {\n  overflow: auto;\n  padding: 16px;\n}\n#aframeInspector .modal-footer {\n  color: #fff;\n  padding: 2px 16px;\n}\n#aframeInspector .gallery {\n  background: #232323;\n  display: flex;\n  flex-wrap: wrap;\n  margin: 15px auto 0;\n  overflow: auto;\n  padding: 15px 3px 3px;\n}\n#aframeInspector .newimage .gallery {\n  padding: 16px;\n}\n#aframeInspector .gallery li {\n  border-radius: 2px;\n  box-shadow: 0 0 6px rgba(0,0,0,0.6);\n  cursor: pointer;\n  margin: 8px;\n  overflow: hidden;\n  width: 155px;\n}\n#aframeInspector .gallery li.selected,\n#aframeInspector .gallery li:hover {\n  box-shadow: 0 0 0 2px #1eaaf1;\n}\n#aframeInspector .gallery li .detail {\n  background-color: #323232;\n  margin: 0;\n  min-height: 60px;\n  padding: 3px 10px;\n}\n#aframeInspector .gallery li .button.fa-external-link {\n  margin-left: 136px;\n  margin-top: 5px;\n  position: fixed;\n}\n#aframeInspector .preview {\n  padding: 10px;\n  width: 150px;\n}\n#aframeInspector .preview input {\n  display: block;\n  margin: 8px 0;\n  width: 144px;\n}\n#aframeInspector .preview button {\n  width: 155px;\n}\n#aframeInspector .preview .detail .title {\n  color: #fff;\n  display: inline-block;\n  max-width: 155px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n#aframeInspector .gallery li.selected .detail,\n#aframeInspector .gallery li:hover .detail {\n  background-color: #444;\n}\n#aframeInspector .gallery li .detail span {\n  color: #777;\n  display: block;\n  margin-top: 4px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  width: 140px;\n}\n#aframeInspector .gallery li.selected .detail span,\n#aframeInspector .gallery li:hover .detail span {\n  color: #888;\n}\n#aframeInspector .gallery li .detail span.title {\n  color: #fff !important;\n}\n#aframeInspector .modal button {\n  appearance: none;\n  border-radius: 0;\n  box-shadow: none;\n  cursor: pointer;\n  display: inline-block;\n  font-size: 12px;\n  line-height: 1.8;\n  margin: 0 10px 0 0;\n  padding: 5px 10px;\n}\n#aframeInspector .modal buttonfocus {\n  outline: none;\n}\n#aframeInspector .modal button {\n  background-color: #1eaaf1;\n  border: none;\n  color: #fff;\n}\n#aframeInspector .modal buttonhover,\n#aframeInspector .modal button.hover {\n  background-color: #346392;\n  text-shadow: -1px 1px #27496d;\n}\n#aframeInspector .modal buttonactive,\n#aframeInspector .modal button.active {\n  background-color: #27496d;\n  text-shadow: -1px 1px #193047;\n}\n#aframeInspector .modal buttondisabled {\n  background-color: #888;\n  cursor: none;\n}\n#aframeInspector .newimage {\n  background-color: #323232;\n  color: #bcbcbc;\n  display: flex;\n  font-size: 13px;\n  justify-content: space-between;\n  margin-top: 10px;\n  overflow: auto;\n  padding: 10px;\n}\n#aframeInspector .newimage input {\n  color: #1eaaf1;\n  padding: 3px 5px;\n}\n#aframeInspector .texture canvas + input {\n  margin-left: 5px;\n}\n#aframeInspector .texture .fa {\n  padding-right: 5px;\n}\n#aframeInspector .texture .fa-external-link {\n  font-size: 14px;\n  padding-top: 2px;\n}\n#aframeInspector .uploader-normal-button .hidden {\n  display: none;\n}\n#aframeInspector .gallery a.fa.texture-link {\n  box-shadow: 0 0 14px -1px rgba(0,0,0,0.75);\n  position: fixed;\n}\n#aframeInspector .assets.search {\n  margin-top: 10px;\n  width: 200px;\n}\n#aframeInspector .assets.search .fa-search {\n  top: 7px;\n}\n#aframeInspector .new_asset_options {\n  margin: 10px;\n}\n#aframeInspector .new_asset_options > ul {\n  margin-left: 10px;\n  padding: 5px;\n}\n#aframeInspector .new_asset_options > ul > li {\n  padding: 10px 0;\n}\n#aframeInspector .new_asset_options .imageUrl {\n  margin-left: 5px;\n  width: 350px;\n}\n#aframeInspector .texture canvas {\n  border: 1px solid #333;\n  cursor: pointer;\n}\n#aframeInspector #viewportBar {\n  align-items: center;\n  background-color: #242424;\n  color: #c3c3c3;\n  display: flex;\n  flex-grow: 2;\n  height: 32px;\n  font-size: 14px;\n  justify-content: space-between;\n  left: 0;\n  margin: 0 auto;\n  right: 0;\n  top: 0;\n}\n#aframeInspector .toolbarButtons {\n  position: relative;\n}\n#aframeInspector .toolbarButtons * {\n  margin-left: 0;\n  padding: 8px;\n  vertical-align: middle;\n}\n#aframeInspector .toolbarButtons a.button {\n  margin: 0 6px 0 0;\n}\n#aframeInspector .toolbarButtons a.button:not(.active):hover {\n  background-color: #444;\n}\n#aframeInspector .toolbarButtons .active {\n  background-color: #1faaf2;\n  color: #fff;\n}\n#aframeInspector .toolbarButtons .active:hover {\n  color: #fff !important;\n}\n#aframeInspector .local-transform {\n  padding-left: 10px;\n}\n#aframeInspector .local-transform label {\n  color: #aaa;\n  padding-left: 5px;\n}\n#aframeInspector .local-transform a.button {\n  padding-top: 0;\n}\n#aframeInspector #cameraSelect {\n  cursor: pointer;\n  width: 110px;\n}\n#aframeInspector #cameraSelect .select__dropdown-indicator {\n  padding-left: 3px;\n  padding-right: 3px;\n}\n#aframeInspector #cameraToolbar {\n  margin-left: 5px;\n  align-items: center;\n  display: flex;\n}\n#aframeInspector #cameraToolbar a {\n  margin-right: 10px;\n}\n#aframeInspector #cameraToolbar .select__control {\n  background: none;\n}\n#aframeInspector #cameraToolbar .select__single-value {\n  color: #c3c3c3;\n}\n#aframeInspector #cameraToolbar .select__single-value:hover {\n  color: #1faaf2;\n}\n#aframeInspector #viewportHud {\n  display: none;\n}\n@media (min-width: 1024px) {\n  #aframeInspector #viewportHud {\n    display: block;\n  }\n}\n#aframeInspector .Select-control {\n  background-color: #222 !important;\n  border: none;\n  border-radius: 0;\n  color: #1faaf2;\n  font-family: $monosapce;\n}\n#aframeInspector .Select-menu-outer {\n  border: none;\n}\n#aframeInspector .Select-menu-outer .is-focused {\n  background-color: #1faaf2 !important;\n  color: #c3c3c3;\n}\n#aframeInspector .Select-option {\n  background-color: #222 !important;\n}\n#aframeInspector .select-widget {\n  display: inline-block;\n  width: 157px;\n}\n#aframeInspector .Select-placeholder,\n#aframeInspector .Select--single > .Select-control .Select-value {\n  color: #1faaf2 !important;\n}\n#aframeInspector .Select-value-label {\n  color: #1faaf2 !important;\n}\n#aframeInspector .dropbtn {\n  border: none;\n  color: #c3c3c3;\n  cursor: pointer;\n}\n#aframeInspector .dropdown {\n  display: inline-block;\n  position: relative;\n}\n#aframeInspector .dropdown-content {\n  background-color: #f9f9f9;\n  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);\n  display: none;\n  left: 8px;\n  min-width: 38px;\n  position: absolute;\n  z-index: 999;\n}\n#aframeInspector .dropdown-content a {\n  background-color: #232323;\n  color: #7d7d7d;\n  display: block;\n  padding: 10px 14px;\n  text-decoration: none;\n}\n#aframeInspector .dropdown-content a:hover {\n  background-color: #4ecbff;\n  color: #c3c3c3;\n}\n#aframeInspector .dropdownhover .dropdown-content {\n  display: block;\n}\n#aframeInspector .dropdownhover .dropbtn {\n  color: #1faaf2;\n}\n#aframeInspector .hidden {\n  display: none;\n}\n#aframeInspector .row {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n#aframeInspector .Select,\n#aframeInspector code,\n#aframeInspector pre,\n#aframeInspector input,\n#aframeInspector textarea,\n#aframeInspector select {\n  font-family: system-ui, BlinkMacSystemFont, -apple-system, \"Segoe UI\", Helvetica, Arial, sans-serif;\n  font-size: 13px;\n}\n#aframeInspector .wf-robotomono-n4-active .Select,\n#aframeInspector .wf-robotomono-n4-active code,\n#aframeInspector .wf-robotomono-n4-active pre,\n#aframeInspector .wf-robotomono-n4-active input,\n#aframeInspector .wf-robotomono-n4-active textarea,\n#aframeInspector .wf-robotomono-n4-active select {\n  font-family: Roboto Mono, Consolas, Andale Mono, Monaco, Courier New, monospace;\n}\n#aframeInspector hr {\n  border: 0;\n  border-top: 1px solid #ccc;\n}\n#aframeInspector a {\n  cursor: pointer;\n}\n#aframeInspector button {\n  position: relative;\n}\n#aframeInspector code {\n  font-family: Consolas, Andale Mono, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;\n}\n#aframeInspector textarea {\n  tab-size: 4;\n  white-space: pre;\n  word-wrap: normal;\n}\n#aframeInspector textarea.success {\n  border-color: #8b8 !important;\n}\n#aframeInspector textarea.fail {\n  background-color: rgba(255,0,0,0.05);\n  border-color: #f00 !important;\n}\n#aframeInspector textarea,\n#aframeInspector input {\n  outline: none /* osx */;\n}\n#aframeInspector .gltfIcon img {\n  box-sizing: content-box;\n  display: inline;\n  height: 20px;\n  left: 5px;\n  padding: 0 5px;\n  position: relative;\n  top: 4px;\n  vertical-align: baseline;\n  width: 20px;\n}\n#aframeInspector #scenegraph,\n#aframeInspector #rightPanel {\n  z-index: 9998;\n}\n#aframeInspector #sidebar,\n#aframeInspector #scenegraph,\n#aframeInspector .panel {\n  cursor: default;\n  user-select: none;\n}\n#aframeInspector .toggle-edit {\n  background-color: #92374d;\n  box-sizing: content-box;\n  color: #fafafa;\n  font-size: 13px;\n  left: 3px;\n  line-height: normal;\n  margin: 0;\n  padding: 6px 10px;\n  position: fixed;\n  text-align: center;\n  text-decoration: none;\n  top: 3px;\n  width: 204px;\n  z-index: 999999999;\n}\n#aframeInspector .toggle-edithover {\n  background-color: #e42b5a;\n}\n#aframeInspector input {\n  background-color: transparent;\n  border: 1px solid #555;\n  color: #fff;\n}\n#aframeInspector input,\n#aframeInspector .texture canvas {\n  transition: 0.1s background-color ease-in-out, 0.1s border-color ease-in-out, 0.1s color ease-in-out;\n}\n#aframeInspector input[type=text],\n#aframeInspector input[type=number],\n#aframeInspector input.string,\n#aframeInspector input.number {\n  min-height: 14px;\n  outline: none;\n}\n#aframeInspector input[type=\"checkbox\"] {\n  cursor: pointer;\n  margin: 0;\n  height: 18px;\n  width: 18px;\n}\n#aframeInspector input.number {\n  background-color: transparent !important;\n  border: 0;\n  color: #2cb7ff !important;\n  cursor: col-resize;\n  font-size: 13px;\n  padding: 2px;\n}\n#aframeInspector input.stringfocus,\n#aframeInspector input.numberfocus {\n  border: 1px solid #20b1fb;\n  color: #fff;\n  cursor: auto;\n}\n#aframeInspector input.error {\n  border: 1px solid #a00;\n}\n#aframeInspector #sidebar {\n  background: #242424;\n  width: 331px;\n}\n#aframeInspector #sidebar * {\n  vertical-align: middle;\n}\n#aframeInspector input,\n#aframeInspector textarea,\n#aframeInspector select {\n  background: #222;\n  border: 1px solid transparent;\n  color: #888;\n}\n#aframeInspector select {\n  background: #393939;\n}\n#aframeInspector input[type=color] {\n  background-color: #333;\n  border: 1px solid #111;\n  height: 28px;\n  cursor: pointer;\n}\n#aframeInspector input[type=color] {\n  cursor: pointer;\n  height: 25px;\n  padding: 0;\n  width: 50px;\n}\n#aframeInspector input[type=color]-webkit-color-swatch {\n  border: 0 /* To remove the gray border. */;\n}\n#aframeInspector input[type=color]-webkit-color-swatch-wrapper {\n  padding: 0 /* To remove the inner padding. */;\n}\n#aframeInspector input[type=color]-moz-color-swatch {\n  border: 0;\n}\n#aframeInspector input[type=color]-moz-focus-inner {\n  border: 0 /* To remove the inner border (specific to Firefox). */;\n  padding: 0;\n}\n#aframeInspector .hidden {\n  visibility: hidden;\n}\n#aframeInspector a.button {\n  color: #bcbcbc;\n  font-size: 16px;\n  margin-left: 10px;\n  text-decoration: none;\n}\n#aframeInspector a.buttonhover {\n  color: #1faaf2;\n}\n#aframeInspector .hide {\n  display: none;\n}\n#aframeInspector .a-canvas.state-dragging {\n  cursor: grabbing;\n}\n#aframeInspector #rightPanel {\n  align-items: stretch;\n  display: flex;\n  justify-content: flex-end;\n}\n#aframeInspector #inspectorContainer {\n  display: flex;\n  justify-content: space-between;\n  left: 0;\n  height: 100%;\n  pointer-events: none;\n  position: fixed;\n  top: 0;\n  width: 100%;\n  z-index: 999999;\n}\n#aframeInspector #scenegraph,\n#aframeInspector #viewportBar,\n#aframeInspector #rightPanel {\n  pointer-events: all;\n}\n#aframeInspector .aframe-inspector-opened a-scene .a-canvas {\n  background-color: #191919;\n  z-index: 9998;\n}\n#aframeInspector .toggle-sidebar {\n  align-items: center;\n  display: flex;\n  height: 100%;\n  position: absolute;\n  z-index: 9998;\n}\n#aframeInspector .toggle-sidebar .left {\n  left: 0;\n}\n#aframeInspector .toggle-sidebar .right {\n  right: 0;\n}\n#aframeInspector .toggle-sidebar a {\n  background-color: #262626;\n  color: #bcbcbc;\n  padding: 5px;\n  z-index: 9998;\n}\n#aframeInspector .toggle-sidebar a.hover {\n  background-color: #1faaf2;\n  color: #fff;\n}\n@-moz-keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-webkit-keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@-o-keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n@keyframes animateopacity {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 253 */
+/* 257 */
 /***/ (function(module, exports) {
 
 /*
@@ -40294,7 +40561,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 254 */
+/* 258 */
 /***/ (function(module, exports) {
 
 /*
@@ -40546,7 +40813,7 @@ function updateLink(linkElement, obj) {
 
 
 /***/ }),
-/* 255 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40561,7 +40828,8 @@ var updates = {};
  *
  * payload: entity, component, property, value.
  */
-Events.on('entityupdate', function (payload) {
+Events.on("entityupdate", function (payload) {
+  console.log("entityupdate", payload);
   var value = payload.value;
 
   var entity = payload.entity;

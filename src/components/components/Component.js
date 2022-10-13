@@ -29,27 +29,26 @@ export default class Component extends React.Component {
   }
 
   componentDidMount() {
-    var clipboard = new Clipboard(
-      '[data-action="copy-component-to-clipboard"]',
-      {
-        text: trigger => {
-          var componentName = trigger
-            .getAttribute("data-component")
-            .toLowerCase();
-          ga(
-            "send",
-            "event",
-            "Components",
-            "copyComponentToClipboard",
-            componentName
-          );
-          return getComponentClipboardRepresentation(
-            this.state.entity,
-            componentName
-          );
-        }
+    // eslint-disable-next-line quotes
+    const trigger = '[data-action="copy-component-to-clipboard"]';
+    var clipboard = new Clipboard(trigger, {
+      text: trigger => {
+        var componentName = trigger
+          .getAttribute("data-component")
+          .toLowerCase();
+        ga(
+          "send",
+          "event",
+          "Components",
+          "copyComponentToClipboard",
+          componentName
+        );
+        return getComponentClipboardRepresentation(
+          this.state.entity,
+          componentName
+        );
       }
-    );
+    });
     clipboard.on("error", e => {
       // @todo Show the error in the UI
       console.error(e);

@@ -1,15 +1,15 @@
 /* global THREE CustomEvent */
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
 
 /* eslint-disable no-unused-vars */
-import TransformControls from './TransformControls.js';
-import EditorControls from './EditorControls.js';
+import TransformControls from "./TransformControls.js";
+import EditorControls from "./EditorControls.js";
 /* eslint-disable no-unused-vars */
 
-import { initRaycaster } from './raycaster';
+import { initRaycaster } from "./raycaster";
 
-import { getNumber } from './utils';
-const Events = require('./Events');
+import { getNumber } from "./utils";
+const Events = require("./Events");
 
 /**
  * Transform controls stuff mostly.
@@ -20,7 +20,7 @@ function Viewport(inspector) {
   const sceneEl = inspector.sceneEl;
 
   let originalCamera = inspector.cameras.original;
-  sceneEl.addEventListener('camera-set-active', event => {
+  sceneEl.addEventListener("camera-set-active", event => {
     // If we're in edit mode, save the newly active camera and activate when exiting.
     if (inspector.opened) {
       originalCamera = event.detail.cameraEl;
@@ -53,7 +53,7 @@ function Viewport(inspector) {
     inspector.container
   );
   transformControls.size = 0.75;
-  transformControls.addEventListener('objectChange', evt => {
+  transformControls.addEventListener("objectChange", evt => {
     const object = transformControls.object;
     if (object === undefined) {
       return;
@@ -63,46 +63,46 @@ function Viewport(inspector) {
 
     updateHelpers(object);
 
-    Events.emit('refreshsidebarobject3d', object);
+    Events.emit("refreshsidebarobject3d", object);
 
     // Emit update event for watcher.
     let component;
     let value;
-    if (evt.mode === 'translate') {
-      component = 'position';
+    if (evt.mode === "translate") {
+      component = "position";
       value = `${object.position.x} ${object.position.y} ${object.position.z}`;
-    } else if (evt.mode === 'rotate') {
-      component = 'rotation';
+    } else if (evt.mode === "rotate") {
+      component = "rotation";
       const d = THREE.MathUtils.radToDeg;
       value = `${d(object.rotation.x)} ${d(object.rotation.y)} ${d(
         object.rotation.z
       )}`;
-    } else if (evt.mode === 'scale') {
-      component = 'scale';
+    } else if (evt.mode === "scale") {
+      component = "scale";
       value = `${object.scale.x} ${object.scale.y} ${object.scale.z}`;
     }
-    Events.emit('entityupdate', {
+    Events.emit("entityupdate", {
       component: component,
       entity: transformControls.object.el,
-      property: '',
+      property: "",
       value: value
     });
 
-    Events.emit('entitytransformed', transformControls.object.el);
+    Events.emit("entitytransformed", transformControls.object.el);
   });
 
-  transformControls.addEventListener('mouseDown', () => {
+  transformControls.addEventListener("mouseDown", () => {
     controls.enabled = false;
   });
 
-  transformControls.addEventListener('mouseUp', () => {
+  transformControls.addEventListener("mouseUp", () => {
     controls.enabled = true;
   });
 
   sceneHelpers.add(transformControls);
 
-  Events.on('entityupdate', detail => {
-    if (inspector.selectedEntity.object3DMap['mesh']) {
+  Events.on("entityupdate", detail => {
+    if (inspector.selectedEntity.object3DMap["mesh"]) {
       selectionBox.setFromObject(inspector.selected);
     }
   });
@@ -114,7 +114,7 @@ function Viewport(inspector) {
   controls.zoomSpeed = 0.05;
   controls.setAspectRatio(sceneEl.canvas.width / sceneEl.canvas.height);
 
-  Events.on('cameratoggle', data => {
+  Events.on("cameratoggle", data => {
     controls.setCamera(data.camera);
     transformControls.setCamera(data.camera);
   });
@@ -132,27 +132,27 @@ function Viewport(inspector) {
   }
   enableControls();
 
-  Events.on('inspectorcleared', () => {
+  Events.on("inspectorcleared", () => {
     controls.center.set(0, 0, 0);
   });
 
-  Events.on('transformmodechange', mode => {
+  Events.on("transformmodechange", mode => {
     transformControls.setMode(mode);
   });
 
-  Events.on('snapchanged', dist => {
+  Events.on("snapchanged", dist => {
     transformControls.setTranslationSnap(dist);
   });
 
-  Events.on('transformspacechanged', space => {
+  Events.on("transformspacechanged", space => {
     transformControls.setSpace(space);
   });
 
-  Events.on('objectselect', object => {
+  Events.on("objectselect", object => {
     selectionBox.visible = false;
     transformControls.detach();
     if (object && object.el) {
-      if (object.el.getObject3D('mesh')) {
+      if (object.el.getObject3D("mesh")) {
         selectionBox.setFromObject(object);
         selectionBox.visible = true;
       }
@@ -161,18 +161,18 @@ function Viewport(inspector) {
     }
   });
 
-  Events.on('objectfocus', object => {
+  Events.on("objectfocus", object => {
     controls.focus(object);
     transformControls.update();
   });
 
-  Events.on('geometrychanged', object => {
+  Events.on("geometrychanged", object => {
     if (object !== null) {
       selectionBox.setFromObject(object);
     }
   });
 
-  Events.on('entityupdate', detail => {
+  Events.on("entityupdate", detail => {
     const object = detail.entity.object3D;
     if (inspector.selected === object) {
       // Hack because object3D always has geometry :(
@@ -195,40 +195,42 @@ function Viewport(inspector) {
     updateHelpers(object);
   });
 
-  Events.on('windowresize', () => {
+  Events.on("windowresize", () => {
     camera.aspect =
       inspector.container.offsetWidth / inspector.container.offsetHeight;
     camera.updateProjectionMatrix();
   });
 
-  Events.on('gridvisibilitychanged', showGrid => {
+  Events.on("gridvisibilitychanged", showGrid => {
     grid.visible = showGrid;
   });
 
-  Events.on('togglegrid', () => {
+  Events.on("togglegrid", () => {
     grid.visible = !grid.visible;
   });
 
-  Events.on('inspectortoggle', active => {
+  Events.on("inspectortoggle", active => {
     if (active) {
       enableControls();
       AFRAME.scenes[0].camera = inspector.camera;
       Array.prototype.slice
-        .call(document.querySelectorAll('.a-enter-vr,.rs-base'))
+        .call(document.querySelectorAll(".a-enter-vr,.rs-base"))
         .forEach(element => {
-          element.style.display = 'none';
+          element.style.display = "none";
         });
     } else {
       disableControls();
-      inspector.cameras.original.setAttribute('camera', 'active', 'true');
-      AFRAME.scenes[0].camera = inspector.cameras.original.getObject3D('camera');
+      inspector.cameras.original.setAttribute("camera", "active", "true");
+      AFRAME.scenes[0].camera = inspector.cameras.original.getObject3D(
+        "camera"
+      );
       Array.prototype.slice
-        .call(document.querySelectorAll('.a-enter-vr,.rs-base'))
+        .call(document.querySelectorAll(".a-enter-vr,.rs-base"))
         .forEach(element => {
-          element.style.display = 'block';
+          element.style.display = "block";
         });
     }
-    ga('send', 'event', 'Viewport', 'toggleEditor', active);
+    ga("send", "event", "Viewport", "toggleEditor", active);
   });
 }
 

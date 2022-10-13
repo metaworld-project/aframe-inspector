@@ -1,4 +1,4 @@
-const Events = require('./Events');
+const Events = require("./Events");
 
 const updates = {};
 
@@ -7,7 +7,8 @@ const updates = {};
  *
  * payload: entity, component, property, value.
  */
-Events.on('entityupdate', payload => {
+Events.on("entityupdate", payload => {
+  console.log("entityupdate", payload);
   let value = payload.value;
 
   const entity = payload.entity;

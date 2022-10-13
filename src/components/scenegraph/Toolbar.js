@@ -1,13 +1,13 @@
-import classnames from 'classnames';
-import React from 'react';
-import Events from '../../lib/Events.js';
-import { saveBlob, saveString } from '../../lib/utils';
+import classnames from "classnames";
+import React from "react";
+import Events from "../../lib/Events.js";
+import { saveBlob, saveString } from "../../lib/utils";
 
-const LOCALSTORAGE_MOCAP_UI = 'aframeinspectormocapuienabled';
+const LOCALSTORAGE_MOCAP_UI = "aframeinspectormocapuienabled";
 
 function filterHelpers(scene, visible) {
   scene.traverse(o => {
-    if (o.userData.source === 'INSPECTOR') {
+    if (o.userData.source === "INSPECTOR") {
       o.visible = visible;
     }
   });
@@ -26,11 +26,11 @@ function slugify(text) {
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w\-]+/g, '-') // Replace all non-word chars with -
-    .replace(/\-\-+/g, '-') // Replace multiple - with single -
-    .replace(/^-+/, '') // Trim - from start of text
-    .replace(/-+$/, ''); // Trim - from end of text
+    .replace(/\s+/g, "-") // Replace spaces with -
+    .replace(/[^\w\-]+/g, "-") // Replace all non-word chars with -
+    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+    .replace(/^-+/, "") // Trim - from start of text
+    .replace(/-+$/, ""); // Trim - from end of text
 }
 
 /**
@@ -46,7 +46,7 @@ export default class Toolbar extends React.Component {
   }
 
   exportSceneToGLTF() {
-    ga('send', 'event', 'SceneGraph', 'exportGLTF');
+    ga("send", "event", "SceneGraph", "exportGLTF");
     const sceneName = getSceneName(AFRAME.scenes[0]);
     const scene = AFRAME.scenes[0].object3D;
     filterHelpers(scene, false);
@@ -54,50 +54,115 @@ export default class Toolbar extends React.Component {
       scene,
       function(buffer) {
         filterHelpers(scene, true);
-        const blob = new Blob([buffer], { type: 'application/octet-stream' });
-        saveBlob(blob, sceneName + '.glb');
+        const blob = new Blob([buffer], { type: "application/octet-stream" });
+        saveBlob(blob, sceneName + ".glb");
       },
       { binary: true }
     );
   }
 
   addEntity() {
-    Events.emit('entitycreate', { element: 'a-entity', components: {} });
+    Events.emit("entitycreate", { element: "a-entity", components: {} });
   }
 
   /**
    * Try to write changes with aframe-inspector-watcher.
    */
   writeChanges = () => {
+    console.log(AFRAME.INSPECTOR.history);
+    const scene = AFRAME.scenes[0];
+
+    // Get all entities & attributes.
+    const entities = scene.querySelectorAll("*");
+    const entitiesData = [];
+    for (let i = 0; i < entities.length; i++) {
+      const entity = entities[i];
+      // ignore aframe-injected entities
+      if (
+        !entity.id ||
+        entity.hasAttribute("aframe-injected") ||
+        entity.hasAttribute("data-aframe-inspector")
+      ) {
+        continue;
+      }
+      const components = entity.components;
+
+      const componentsData = {};
+      for (const componentName in components) {
+        const component = components[componentName];
+        // default components are not in the schema
+        if (
+          componentName === "position" ||
+          componentName === "rotation" ||
+          componentName === "scale"
+        ) {
+          componentsData[componentName] = component.data;
+          continue;
+        }
+
+        const schema = component.schema;
+
+        if (typeof component.data === "object") {
+          console.log(schema);
+          const componentData = {};
+          for (const property in schema) {
+            componentData[property] = component.data[property];
+          }
+          console.log(componentData);
+          componentsData[componentName] = componentData;
+        }
+
+        if (typeof component.data === "string") {
+          componentsData[componentName] = component.data;
+        }
+      }
+      entitiesData.push({
+        id: entity.id,
+        position: entity.object3D.position,
+        rotation: entity.object3D.rotation.toVector3(),
+        scale: entity.object3D.scale,
+        components: componentsData
+      });
+    }
+    console.log(entitiesData);
+
+    // https://metaworld-cms.s3.ap-southeast-1.amazonaws.com/temp/1665675054picture-frame.glb
+
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:51234/save');
+    xhr.open("PUT", "https://630cf34e53a833c5343923e3.mockapi.io/spaces/1");
     xhr.onerror = () => {
-      alert('aframe-watcher not running. This feature requires a companion service running locally. npm install aframe-watcher to save changes back to file. Read more at supermedium.com/aframe-watcher');
+      alert(
+        "aframe-watcher not running. This feature requires a companion service running locally. npm install aframe-watcher to save changes back to file. Read more at supermedium.com/aframe-watcher"
+      );
     };
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify(AFRAME.INSPECTOR.history.updates));
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(
+      JSON.stringify({
+        entities: entitiesData
+      })
+    );
   };
 
   toggleScenePlaying = () => {
     if (this.state.isPlaying) {
       AFRAME.scenes[0].pause();
-      this.setState({isPlaying: false});
+      this.setState({ isPlaying: false });
       AFRAME.scenes[0].isPlaying = true;
-      document.getElementById('aframeInspectorMouseCursor').play();
+      document.getElementById("aframeInspectorMouseCursor").play();
       return;
     }
     AFRAME.scenes[0].isPlaying = false;
     AFRAME.scenes[0].play();
-    this.setState({isPlaying: true});
-  }
+    this.setState({ isPlaying: true });
+  };
 
   render() {
     const watcherClassNames = classnames({
       button: true,
       fa: true,
-      'fa-save': true
+      "fa-save": true
     });
-    const watcherTitle = 'Write changes with aframe-watcher.';
+    const watcherTitle = "Write changes with aframe-watcher.";
 
     return (
       <div id="toolbar">
@@ -109,15 +174,24 @@ export default class Toolbar extends React.Component {
           />
           <a
             id="playPauseScene"
-            className={'button fa ' + (this.state.isPlaying ? 'fa-pause' : 'fa-play')}
-            title={this.state.isPlaying ? 'Pause scene' : 'Resume scene'}
-            onClick={this.toggleScenePlaying}>
-          </a>
+            className={
+              "button fa " + (this.state.isPlaying ? "fa-pause" : "fa-play")
+            }
+            title={this.state.isPlaying ? "Pause scene" : "Resume scene"}
+            onClick={this.toggleScenePlaying}
+          />
           <a
             className="gltfIcon"
             title="Export to GLTF"
-            onClick={this.exportSceneToGLTF}>
-            <img src={process.env.NODE_ENV === 'production' ? 'https://aframe.io/aframe-inspector/assets/gltf.svg' : '../assets/gltf.svg'} />
+            onClick={this.exportSceneToGLTF}
+          >
+            <img
+              src={
+                process.env.NODE_ENV === "production"
+                  ? "https://aframe.io/aframe-inspector/assets/gltf.svg"
+                  : "../assets/gltf.svg"
+              }
+            />
           </a>
           <a
             className={watcherClassNames}

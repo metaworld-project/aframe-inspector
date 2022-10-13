@@ -42,6 +42,7 @@ export default class CommonComponents extends React.Component {
       this.forceUpdate();
     });
 
+    // eslint-disable-next-line quotes
     var clipboard = new Clipboard('[data-action="copy-entity-to-clipboard"]', {
       text: trigger => {
         return getEntityClipboardRepresentation(this.props.entity);
