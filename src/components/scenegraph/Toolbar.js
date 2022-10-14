@@ -85,6 +85,10 @@ export default class Toolbar extends React.Component {
       ) {
         continue;
       }
+      // Ignore core entities.
+      if (entity.hasAttribute("core-entity")) {
+        continue;
+      }
       const components = entity.components;
 
       const componentsData = {};
