@@ -1,5 +1,6 @@
 import classnames from "classnames";
 import React from "react";
+import { whitelistTagNames } from "../../configs/whitelist.js";
 import Events from "../../lib/Events.js";
 import { saveBlob, saveString } from "../../lib/utils";
 
@@ -77,6 +78,10 @@ export default class Toolbar extends React.Component {
     const entitiesData = [];
     for (let i = 0; i < entities.length; i++) {
       const entity = entities[i];
+
+      if (!whitelistTagNames.includes(entity.tagName.toLowerCase())) {
+        continue;
+      }
       // ignore aframe-injected entities
       if (
         !entity.id ||
@@ -120,6 +125,12 @@ export default class Toolbar extends React.Component {
           componentsData[componentName] = component.data;
         }
       }
+      console.log(
+        `Processing entity ${entity.tagName} ${entity.id} ${Object.keys(
+          componentsData
+        ).join(", ")}`
+      );
+
       entitiesData.push({
         id: entity.id,
         position: entity.object3D.position,
@@ -132,12 +143,23 @@ export default class Toolbar extends React.Component {
 
     // https://metaworld-cms.s3.ap-southeast-1.amazonaws.com/temp/1665675054picture-frame.glb
 
+    const documentTitle = document.title;
+    document.title = "Saving...";
+
     const xhr = new XMLHttpRequest();
     xhr.open("PUT", "https://630cf34e53a833c5343923e3.mockapi.io/spaces/1");
-    xhr.onerror = () => {
+    xhr.onerror = err => {
       alert(
-        "aframe-watcher not running. This feature requires a companion service running locally. npm install aframe-watcher to save changes back to file. Read more at supermedium.com/aframe-watcher"
+        "Could not write changes. Error: " +
+          err.target.status +
+          " " +
+          err.target.statusText
       );
+      document.title = documentTitle;
+    };
+    xhr.onload = () => {
+      document.title = documentTitle;
+      alert("Changes written successfully.");
     };
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(

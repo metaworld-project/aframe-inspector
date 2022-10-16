@@ -564,7 +564,7 @@ export function printEntity(entity, onDoubleClick) {
       </span>
       {entityName && (
         <span className="entityName" data-entity-name-type={type}>
-          &nbsp;{entityName}
+          {entityName}
         </span>
       )}
       {!!icons && (
@@ -603,4 +603,9 @@ export function createEntity(definition, cb) {
   AFRAME.scenes[0].appendChild(entity);
 
   return entity;
+}
+
+export function changeEntityPrimitive(entity, newPrimitive) {
+  entity.parentNode.removeChild(entity);
+  Events.emit("entitycreate", { element: newPrimitive, components: {} });
 }

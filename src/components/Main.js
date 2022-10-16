@@ -83,6 +83,10 @@ export default class Main extends React.Component {
       this.setState({ entity: entity });
     });
 
+    Events.on("entitychanged", entity => {
+      this.setState({ entity: entity });
+    });
+
     Events.on("inspectortoggle", enabled => {
       this.setState({ inspectorEnabled: enabled });
     });

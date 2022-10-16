@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { InputWidget } from "../widgets";
+import { InputWidget, SelectWidget } from "../widgets";
 import DEFAULT_COMPONENTS from "./DefaultComponents";
 import PropertyRow from "./PropertyRow";
 import Collapsible from "../Collapsible";
@@ -8,11 +8,13 @@ import Mixins from "./Mixins";
 import {
   updateEntity,
   getEntityClipboardRepresentation,
-  printEntity
+  printEntity,
+  changeEntityPrimitive
 } from "../../lib/entity";
 import Events from "../../lib/Events";
 import Clipboard from "clipboard";
 import { saveBlob } from "../../lib/utils";
+import { whitelistTagNames } from "../../configs/whitelist";
 
 // @todo Take this out and use updateEntity?
 function changeId(componentName, value) {
@@ -134,6 +136,19 @@ export default class CommonComponents extends React.Component {
           {entityButtons}
         </div>
         <div className="collapsible-content">
+          <div className="propertyRow">
+            <label htmlFor="primitive" className="text">
+              Primitive
+            </label>
+            <SelectWidget
+              onChange={(_, value) => changeEntityPrimitive(entity, value)}
+              entity={entity}
+              name="primitive"
+              componentname="primitive"
+              options={whitelistTagNames}
+              value={entity.tagName.toLowerCase()}
+            />
+          </div>
           <div className="propertyRow">
             <label htmlFor="id" className="text">
               ID

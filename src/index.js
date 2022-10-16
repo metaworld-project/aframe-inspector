@@ -11,7 +11,7 @@ import ReactDOM from "react-dom";
 import Main from "./components/Main";
 import { initCameras } from "./lib/cameras";
 import { injectCSS, injectJS } from "./lib/utils";
-import { createEntity } from "./lib/entity";
+import { changeEntityPrimitive, createEntity } from "./lib/entity";
 import { GLTFExporter } from "../vendor/GLTFExporter"; // eslint-disable-line no-unused-vars
 
 require("./style/index.styl");
@@ -172,6 +172,11 @@ Inspector.prototype = {
         this.helpers[node.uuid].visible = true;
       }
     });
+  },
+
+  changeEntityPrimitive: function(entity, primitive) {
+    const newEntity = changeEntityPrimitive(entity, primitive);
+    this.selectEntity(newEntity);
   },
 
   initEvents: function() {

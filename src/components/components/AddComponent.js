@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Events from "../../lib/Events";
 import Select from "react-select";
-import whiteListOptions from "../../configs/whiteListOptions";
+import { whitelistComponents } from "../../configs/whitelist";
 
 var DELIMITER = " ";
 
@@ -60,7 +60,7 @@ export default class AddComponent extends React.Component {
     //     return { value: value, label: value, origin: "loaded" };
     //   });
 
-    this.options = whiteListOptions.map(value => ({
+    this.options = whitelistComponents.map(value => ({
       value,
       label: value,
       origin: "loaded"
