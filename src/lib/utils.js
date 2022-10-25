@@ -3,16 +3,16 @@ function getNumber(value) {
 }
 
 function getMajorVersion(version) {
-  var major = version.split('.');
+  var major = version.split(".");
   var clean = false;
   for (var i = 0; i < major.length; i++) {
     if (clean) {
       major[i] = 0;
-    } else if (major[i] !== '0') {
+    } else if (major[i] !== "0") {
       clean = true;
     }
   }
-  return major.join('.');
+  return major.join(".");
 }
 
 function equal(var1, var2) {
@@ -23,7 +23,7 @@ function equal(var1, var2) {
   if (type1 !== type2) {
     return false;
   }
-  if (type1 !== 'object' || var1 === null || var2 === null) {
+  if (type1 !== "object" || var1 === null || var2 === null) {
     return var1 === var2;
   }
   keys1 = Object.keys(var1);
@@ -42,48 +42,48 @@ function equal(var1, var2) {
 function getOS() {
   var userAgent = window.navigator.userAgent;
   var platform = window.navigator.platform;
-  var macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
-  var windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
-  var iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+  var macosPlatforms = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"];
+  var windowsPlatforms = ["Win32", "Win64", "Windows", "WinCE"];
+  var iosPlatforms = ["iPhone", "iPad", "iPod"];
   var os = null;
 
   if (macosPlatforms.indexOf(platform) !== -1) {
-    os = 'macos';
+    os = "macos";
   } else if (iosPlatforms.indexOf(platform) !== -1) {
-    os = 'ios';
+    os = "ios";
   } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    os = 'windows';
+    os = "windows";
   } else if (/Android/.test(userAgent)) {
-    os = 'android';
+    os = "android";
   } else if (!os && /Linux/.test(platform)) {
-    os = 'linux';
+    os = "linux";
   }
 
   return os;
 }
 
 function injectCSS(url) {
-  var link = document.createElement('link');
+  var link = document.createElement("link");
   link.href = url;
-  link.type = 'text/css';
-  link.rel = 'stylesheet';
-  link.media = 'screen,print';
-  link.setAttribute('data-aframe-inspector', 'style');
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  link.media = "screen,print";
+  link.setAttribute("data-aframe-inspector", "style");
   document.head.appendChild(link);
 }
 
 function injectJS(url, onLoad, onError) {
-  var link = document.createElement('script');
+  var link = document.createElement("script");
   link.src = url;
-  link.charset = 'utf-8';
-  link.setAttribute('data-aframe-inspector', 'style');
+  link.charset = "utf-8";
+  link.setAttribute("data-aframe-inspector", "style");
 
   if (onLoad) {
-    link.addEventListener('load', onLoad);
+    link.addEventListener("load", onLoad);
   }
 
   if (onError) {
-    link.addEventListener('error', onError);
+    link.addEventListener("error", onError);
   }
 
   document.head.appendChild(link);
@@ -94,13 +94,30 @@ function saveString(text, filename, mimeType) {
 }
 
 function saveBlob(blob, filename) {
-  var link = document.createElement('a');
-  link.style.display = 'none';
+  var link = document.createElement("a");
+  link.style.display = "none";
   document.body.appendChild(link);
   link.href = URL.createObjectURL(blob);
-  link.download = filename || 'ascene.html';
+  link.download = filename || "ascene.html";
   link.click();
   // URL.revokeObjectURL(url); breaks Firefox...
+}
+
+function getUrlParameter(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+function getCookie(name) {
+  var value = "; " + document.cookie;
+  var parts = value.split("; " + name + "=");
+  if (parts.length === 2) {
+    return parts
+      .pop()
+      .split(";")
+      .shift();
+  }
+  return null;
 }
 
 module.exports = {
@@ -112,5 +129,7 @@ module.exports = {
   injectCSS: injectCSS,
   injectJS: injectJS,
   saveString: saveString,
-  saveBlob: saveBlob
+  saveBlob: saveBlob,
+  getUrlParameter: getUrlParameter,
+  getCookie: getCookie
 };

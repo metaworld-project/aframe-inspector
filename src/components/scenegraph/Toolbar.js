@@ -3,6 +3,7 @@ import React from "react";
 import { whitelistTagNames } from "../../configs/whitelist.js";
 import Events from "../../lib/Events.js";
 import { saveBlob, saveString } from "../../lib/utils";
+import { updateSpace } from "../../services/space.service.js";
 
 const LOCALSTORAGE_MOCAP_UI = "aframeinspectormocapuienabled";
 
@@ -146,27 +147,15 @@ export default class Toolbar extends React.Component {
     const documentTitle = document.title;
     document.title = "Saving...";
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("PUT", "https://630cf34e53a833c5343923e3.mockapi.io/spaces/1");
-    xhr.onerror = err => {
-      alert(
-        "Could not write changes. Error: " +
-          err.target.status +
-          " " +
-          err.target.statusText
-      );
-      document.title = documentTitle;
-    };
-    xhr.onload = () => {
-      document.title = documentTitle;
-      alert("Changes written successfully.");
-    };
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(
-      JSON.stringify({
-        entities: entitiesData
+    updateSpace(entitiesData)
+      .then(() => {
+        document.title = documentTitle;
+        alert("Changes written successfully.");
       })
-    );
+      .catch(err => {
+        alert("Could not write changes. Error: " + err.message);
+        document.title = documentTitle;
+      });
   };
 
   toggleScenePlaying = () => {
