@@ -1,13 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
+import { uploadFileV2 } from "../../services/upload.service.js";
 
-var Events = require('../../lib/Events.js');
+var Events = require("../../lib/Events.js");
 
 function getUrlFromId(assetId) {
   return (
     assetId.length > 1 &&
     document.querySelector(assetId) &&
-    document.querySelector(assetId).getAttribute('src')
+    document.querySelector(assetId).getAttribute("src")
   );
 }
 
@@ -18,22 +19,22 @@ function GetFilename(url) {
       return m[1];
     }
   }
-  return '';
+  return "";
 }
 
 function insertNewAsset(type, id, src) {
   var element = null;
   switch (type) {
-    case 'img':
+    case "img":
       {
-        element = document.createElement('img');
+        element = document.createElement("img");
         element.id = id;
         element.src = src;
       }
       break;
   }
   if (element) {
-    document.getElementsByTagName('a-assets')[0].appendChild(element);
+    document.getElementsByTagName("a-assets")[0].appendChild(element);
   }
 }
 
@@ -48,16 +49,16 @@ function insertOrGetImageAsset(src) {
     // Check if first char of the ID is a number (Non a valid ID)
     // In that case a 'i' preffix will be added
     if (!isNaN(parseInt(id[0], 10))) {
-      id = 'i' + id;
+      id = "i" + id;
     }
     if (document.getElementById(id)) {
       var i = 1;
-      while (document.getElementById(id + '_' + i)) {
+      while (document.getElementById(id + "_" + i)) {
         i++;
       }
-      id += '_' + i;
+      id += "_" + i;
     }
-    insertNewAsset('img', id, src);
+    insertNewAsset("img", id, src);
   }
 
   return id;
@@ -74,18 +75,18 @@ export default class TextureWidget extends React.Component {
   };
 
   static defaultProps = {
-    value: '',
-    mapName: 'nomap',
-    dataURL: ''
+    value: "",
+    mapName: "nomap",
+    dataURL: ""
   };
 
   constructor(props) {
     super(props);
-    this.state = { value: this.props.value || '' };
+    this.state = { value: this.props.value || "" };
   }
 
   componentDidMount() {
-    this.setValue(this.props.value || '');
+    this.setValue(this.props.value || "");
   }
 
   componentWillReceiveProps(newProps) {
@@ -103,10 +104,10 @@ export default class TextureWidget extends React.Component {
 
   setValue(value) {
     var canvas = this.refs.canvas;
-    var context = canvas.getContext('2d');
+    var context = canvas.getContext("2d");
 
     function paintPreviewWithImage(image) {
-      var filename = image.src.replace(/^.*[\\\/]/, '');
+      var filename = image.src.replace(/^.*[\\\/]/, "");
       if (image !== undefined && image.width > 0) {
         canvas.title = filename;
         var scale = canvas.width / image.width;
@@ -138,7 +139,7 @@ export default class TextureWidget extends React.Component {
     }
 
     var url;
-    var isAssetHash = value[0] === '#';
+    var isAssetHash = value[0] === "#";
     var isAssetImg = value instanceof HTMLImageElement;
 
     if (isAssetImg) {
@@ -151,14 +152,14 @@ export default class TextureWidget extends React.Component {
 
     var texture = getTextureFromSrc(value);
     var valueType = null;
-    valueType = isAssetImg || isAssetHash ? 'asset' : 'url';
+    valueType = isAssetImg || isAssetHash ? "asset" : "url";
     if (texture) {
       texture.then(paintPreview);
     } else if (url) {
       // The image still didn't load
       var image = new Image();
       image.addEventListener(
-        'load',
+        "load",
         () => {
           paintPreviewWithImage(image);
         },
@@ -170,7 +171,7 @@ export default class TextureWidget extends React.Component {
     }
 
     this.setState({
-      value: isAssetImg ? '#' + value.id : value,
+      value: isAssetImg ? "#" + value.id : value,
       valueType: valueType,
       url: url
     });
@@ -190,19 +191,19 @@ export default class TextureWidget extends React.Component {
   };
 
   removeMap = e => {
-    this.setValue('');
-    this.notifyChanged('');
+    this.setValue("");
+    this.notifyChanged("");
   };
 
   openDialog = () => {
-    Events.emit('opentexturesmodal', this.state.value, image => {
+    Events.emit("opentexturesmodal", this.state.value, image => {
       if (!image) {
         return;
       }
       var value = image.value;
-      if (image.type !== 'asset') {
+      if (image.type !== "asset") {
         var assetId = insertOrGetImageAsset(image.src);
-        value = '#' + assetId;
+        value = "#" + assetId;
       }
 
       if (this.props.onChange) {
@@ -213,18 +214,53 @@ export default class TextureWidget extends React.Component {
     });
   };
 
+  handleClickUploadFile = () => {
+    this.inputRef.click();
+  };
+
+  onFileChange = e => {
+    const file = e.target.files[0];
+    uploadFileV2(file)
+      .then(({ url }) => {
+        console.log("url", url);
+        this.setState({ value: url });
+        if (this.props.onChange) {
+          this.props.onChange(this.props.name, url);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        // alert(err);
+      });
+  };
+
   render() {
-    let hint = '';
+    let hint = "";
     if (this.state.value) {
-      if (this.state.valueType === 'asset') {
-        hint = 'Asset ID: ' + this.state.value + '\nURL: ' + this.state.url;
+      if (this.state.valueType === "asset") {
+        hint = "Asset ID: " + this.state.value + "\nURL: " + this.state.url;
       } else {
-        hint = 'URL: ' + this.state.value;
+        hint = "URL: " + this.state.value;
       }
     }
 
     return (
       <span className="texture">
+        <div className="upload">
+          <input
+            type="file"
+            className="hidden"
+            // accept only glb files
+            // accept=".glb"
+            onChange={this.onFileChange}
+            ref={ref => (this.inputRef = ref)}
+          />
+          <a
+            title="Upload file"
+            className="button fa fa-upload"
+            onClick={this.handleClickUploadFile}
+          />
+        </div>
         <input
           className="map_value string"
           type="text"

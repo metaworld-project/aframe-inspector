@@ -1,6 +1,6 @@
 var React = require("react");
 import PropTypes from "prop-types";
-import { uploadFile } from "../../services/upload.service";
+import { uploadFileV2 } from "../../services/upload.service";
 
 export default class UploadInputWidget extends React.Component {
   static propTypes = {
@@ -37,8 +37,8 @@ export default class UploadInputWidget extends React.Component {
 
   onFileChange = e => {
     const file = e.target.files[0];
-    uploadFile(file)
-      .then(({ data: url }) => {
+    uploadFileV2(file)
+      .then(({ url }) => {
         console.log("url", url);
         this.setState({ value: url });
         if (this.props.onChange) {
@@ -46,7 +46,8 @@ export default class UploadInputWidget extends React.Component {
         }
       })
       .catch(err => {
-        alert(err);
+        console.error(err);
+        // alert(err);
       });
   };
 

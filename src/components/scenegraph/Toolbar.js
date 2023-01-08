@@ -126,11 +126,11 @@ export default class Toolbar extends React.Component {
           componentsData[componentName] = component.data;
         }
       }
-      console.log(
-        `Processing entity ${entity.tagName} ${entity.id} ${Object.keys(
-          componentsData
-        ).join(", ")}`
-      );
+      // console.log(
+      //   `Processing entity ${entity.tagName} ${entity.id} ${Object.keys(
+      //     componentsData
+      //   ).join(", ")}`
+      // );
 
       entitiesData.push({
         id: entity.id,
@@ -140,9 +140,6 @@ export default class Toolbar extends React.Component {
         components: componentsData
       });
     }
-    console.log(entitiesData);
-
-    // https://metaworld-cms.s3.ap-southeast-1.amazonaws.com/temp/1665675054picture-frame.glb
 
     const documentTitle = document.title;
     document.title = "Saving...";
@@ -153,7 +150,8 @@ export default class Toolbar extends React.Component {
         alert("Changes written successfully.");
       })
       .catch(err => {
-        alert("Could not write changes. Error: " + err.message);
+        // alert("Could not write changes. Error: " + err.message);
+        console.error(err);
         document.title = documentTitle;
       });
   };

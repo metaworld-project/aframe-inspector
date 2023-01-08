@@ -107,6 +107,7 @@ export default class PropertyRow extends React.Component {
       case "boolean": {
         return <BooleanWidget {...widgetProps} />;
       }
+
       case "model": {
         return <UploadInputWidget {...widgetProps} />;
       }
