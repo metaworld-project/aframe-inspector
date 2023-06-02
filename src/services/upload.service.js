@@ -34,3 +34,25 @@ export const uploadFileV2 = file => {
       console.error("Error:", error);
     });
 };
+
+const signURL = () => {
+  return fetch("/theta-video/sign-url", {
+    method: "POST"
+  }).then(response => response.json());
+};
+
+const uploadFileToSignedURL = (signedURL, file) => {
+  return fetch(signedURL, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/octet-stream"
+    },
+    body: file
+  });
+};
+
+export const signAndUploadFile = file => {
+  return signURL().then(({ presigned_url }) => {
+    return uploadFileToSignedURL(presigned_url, file);
+  });
+};
