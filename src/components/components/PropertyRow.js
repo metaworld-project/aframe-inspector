@@ -15,6 +15,7 @@ import Vec3Widget from "../widgets/Vec3Widget";
 import Vec2Widget from "../widgets/Vec2Widget";
 import { updateEntity } from "../../lib/entity";
 import UploadInputWidget from "../widgets/UploadInputWidget";
+import ThetaVideoInputWidget from "../widgets/ThetaVideoInputWidget";
 
 export default class PropertyRow extends React.Component {
   static propTypes = {
@@ -82,7 +83,7 @@ export default class PropertyRow extends React.Component {
     if (type === "map" || isMap) {
       return <TextureWidget {...widgetProps} />;
     }
-
+    console.log(`PropertyRow.js: type = ${type}`);
     switch (type) {
       case "number": {
         return <NumberWidget {...widgetProps} {...numberWidgetProps} />;
@@ -107,9 +108,11 @@ export default class PropertyRow extends React.Component {
       case "boolean": {
         return <BooleanWidget {...widgetProps} />;
       }
-
       case "model": {
         return <UploadInputWidget {...widgetProps} />;
+      }
+      case "theta-video": {
+        return <ThetaVideoInputWidget {...widgetProps} />;
       }
       default: {
         return <InputWidget {...widgetProps} />;
