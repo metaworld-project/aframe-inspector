@@ -52,7 +52,14 @@ const uploadFileToSignedURL = (signedURL, file) => {
 };
 
 export const signAndUploadFile = file => {
-  return signURL().then(({ presigned_url }) => {
-    return uploadFileToSignedURL(presigned_url, file);
+  return signURL().then(({ id, presigned_url, service_account_id }) => {
+    return Promise.all([
+      uploadFileV2(file),
+      uploadFileToSignedURL(presigned_url, file)
+    ]).then(results => {
+      results[0].id = id;
+      results[0].service_account_id = service_account_id;
+      return results[0];
+    });
   });
 };

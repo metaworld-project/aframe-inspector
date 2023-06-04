@@ -38,10 +38,15 @@ export default class ThetaVideoInputWidget extends React.Component {
   onFileChange = e => {
     const file = e.target.files[0];
     signAndUploadFile(file)
-      .then(({ url }) => {
+      .then(({ url, id, service_account_id  }) => {
         console.log("url", url);
         this.setState({ value: url });
         if (this.props.onChange) {
+          this.props.entity.setAttribute("theta-video", {
+            "theta-video-id": id,
+            "theta-video-service_account_id": service_account_id,
+            "source-url": url
+          });
           this.props.onChange(this.props.name, url);
         }
       })
@@ -52,6 +57,7 @@ export default class ThetaVideoInputWidget extends React.Component {
   };
 
   render() {
+    console.log(this);
     return (
       <div className="row">
         <input
